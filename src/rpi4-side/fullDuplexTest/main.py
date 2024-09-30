@@ -17,12 +17,12 @@ def activateSlave(state):
 
 # SEND DATA
 def spiTx(txData):
-  print(f"Tx Data: {txData}")
+  print(f"Tx Data: {txData[0]}")
   spi.xfer(txData)
 
 def spiRx():
   rxData = spi.readbytes(2) # 2 bytes of len ("3" and "\0")
-  print(f"Rx Data: {rxData}")
+  print(f"Rx Data: {rxData[0]}")
 
 def main(bus, cs):
   # SPI CONFIG
@@ -36,12 +36,12 @@ def main(bus, cs):
   # MAIN LOOP
   try:
     while True:
-      for i in range (5):
+      for i in range (4):
         activateSlave(True)
         txBufferData = [i] # data to send
-        spiTx(txBufferData) # send data
-        sleep(0.2)
         spiRx() # receive data
+        sleep(0.5)
+        spiTx(txBufferData) # send data
         activateSlave(False)
         sleep(1)
   except KeyboardInterrupt:

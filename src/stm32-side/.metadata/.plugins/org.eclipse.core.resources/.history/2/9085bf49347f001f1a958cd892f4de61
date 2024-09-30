@@ -46,7 +46,7 @@ SPI_HandleTypeDef hspi1;
 
 /* USER CODE BEGIN PV */
 /* Private variables */
-uint8_t txBuffer = 3; // DATA to send
+uint8_t txBuffer [] = "3" ; // DATA to send
 uint8_t rxBuffer = 0; // DATA to receive
 /* USER CODE END PV */
 
@@ -104,10 +104,10 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
-    if (HAL_SPI_Receive(&hspi1, &rxBuffer, sizeof(uint8_t), 100) == HAL_OK){  //HAL_MAX_DELAY  sizeof(uint8_t)
+    if (HAL_SPI_Receive(&hspi1, &buffer, sizeof(uint8_t), 100) == HAL_OK){  //HAL_MAX_DELAY  sizeof(uint8_t)
 			HAL_GPIO_TogglePin(BUILTIN_LED_GPIO_Port, BUILTIN_LED_Pin);
 			HAL_GPIO_TogglePin(RELAY_GPIO_Port, RELAY_Pin);
-			printBufferData(rxBuffer);
+			printBufferData(buffer);
 			rxBuffer = 0;
     }else{
     	continue;

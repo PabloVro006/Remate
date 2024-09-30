@@ -46,7 +46,7 @@ SPI_HandleTypeDef hspi1;
 
 /* USER CODE BEGIN PV */
 /* Private variables */
-uint8_t txBuffer = 3; // DATA to send
+uint8_t txBuffer [] = "3" ; // DATA to send
 uint8_t rxBuffer = 0; // DATA to receive
 /* USER CODE END PV */
 
