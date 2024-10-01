@@ -46,8 +46,9 @@ SPI_HandleTypeDef hspi1;
 
 /* USER CODE BEGIN PV */
 /* Private variables */
-uint8_t txBuffer = 3; // DATA to send
-uint8_t rxBuffer = 0; // DATA to receive
+uint8_t txBufferStopRx = 1; // DATA to send for stopping the MOSI
+uint8_t txBufferStartRx = 0; // DATA to send for starting the MOSI
+uint8_t rxBuffer; // DATA to receive
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -104,16 +105,17 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
-    if (HAL_SPI_Receive(&hspi1, &rxBuffer, sizeof(uint8_t), 100) == HAL_OK){  //HAL_MAX_DELAY  sizeof(uint8_t)
-			HAL_GPIO_TogglePin(BUILTIN_LED_GPIO_Port, BUILTIN_LED_Pin);
-			HAL_GPIO_TogglePin(RELAY_GPIO_Port, RELAY_Pin);
-			printBufferData(rxBuffer);
-			rxBuffer = 0;
+    if (HAL_SPI_Receive(&hspi1, &rxBuffer, sizeof(uint8_t), 100) == HAL_OK){  //HAL_MAX_DELAY
+      HAL_SPI_Transmit(&hspi1, &txBufferStopRx, sizeof(uint8_t), 100);
+      printBufferData(rxBuffer);
+	  HAL_GPIO_TogglePin(BUILTIN_LED_GPIO_Port, BUILTIN_LED_Pin);
+	  HAL_GPIO_TogglePin(RELAY_GPIO_Port, RELAY_Pin);
+	  HAL_SPI_Transmit(&hspi1, &txBufferStartRx, sizeof(uint8_t), 100);
+      //rxBuffer = 0;
     }else{
-    	continue;
+      continue;
     }
-		HAL_SPI_Transmit(&hspi1, &txBuffer, sizeof(uint8_t), 100);
-		HAL_Delay(10);
+	HAL_Delay(10);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
