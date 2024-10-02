@@ -28,7 +28,7 @@ void printBufferData(uint8_t buffer){
 	SSD1306_GotoXY (109,28);
 	SSD1306_Puts ("]", &Font_16x26, 1);
 
-	itoa(buffer, &charBuffer, 10);
+	itoa((int)buffer, &charBuffer, 10);
 	SSD1306_GotoXY (60, 30);
 	SSD1306_Puts(&charBuffer, &Font_11x18, 1);
 	SSD1306_UpdateScreen();

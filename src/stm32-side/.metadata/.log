@@ -526,3 +526,144 @@ C Model Exception: C Model Status [Element main.c does not exist.]
 	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:207)
 !SUBENTRY 1 org.eclipse.cdt.core 4 969 2024-10-01 21:21:43.360
 !MESSAGE Element main.c does not exist.
+!SESSION 2024-10-02 15:47:26.581 -----------------------------------------------
+eclipse.buildId=Version 1.16.1
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -keyring /Users/pablo/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/pablo/.eclipse_keyring
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-10-02 15:48:01.097
+!MESSAGE Log4j2 initialized with config file /Users/pablo/Developer/GitHub/Remate/src/stm32-side/.metadata/.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-10-02 15:48:11.195
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.urischeme 4 0 2024-10-02 15:48:13.333
+!MESSAGE org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 10; DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+!STACK 0
+java.lang.IllegalArgumentException: org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 10; DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+	at org.eclipse.urischeme.internal.registration.PlistFileWriter.getDom(PlistFileWriter.java:221)
+	at org.eclipse.urischeme.internal.registration.PlistFileWriter.<init>(PlistFileWriter.java:69)
+	at org.eclipse.urischeme.internal.registration.RegistrationMacOsX.getPlistFileWriter(RegistrationMacOsX.java:122)
+	at org.eclipse.urischeme.internal.registration.RegistrationMacOsX.changePlistFile(RegistrationMacOsX.java:139)
+	at org.eclipse.urischeme.internal.registration.RegistrationMacOsX.handleSchemes(RegistrationMacOsX.java:55)
+	at org.eclipse.urischeme.AutoRegisterSchemeHandlersJob.run(AutoRegisterSchemeHandlersJob.java:95)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 10; DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+	at java.xml/com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(DOMParser.java:262)
+	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:342)
+	at org.eclipse.core.internal.runtime.XmlProcessorFactory.parseWithErrorOnDOCTYPE(XmlProcessorFactory.java:246)
+	at org.eclipse.urischeme.internal.registration.PlistFileWriter.getDom(PlistFileWriter.java:219)
+	... 6 more
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 2 2 2024-10-02 15:48:16.182
+!MESSAGE ST-LINK firmware verification, Check required failed
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 2 2 2024-10-02 15:48:16.672
+!MESSAGE ST-LINK firmware verification, No latest info found: -1
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 2 2 2024-10-02 15:48:37.331
+!MESSAGE ST-LINK firmware verification, Check required failed
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 2 2 2024-10-02 15:48:37.336
+!MESSAGE ST-LINK firmware verification, No latest info found: -1
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2024-10-02 15:48:52.169
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+target remote localhost:61234
+
+Error message from debugger back end:
+localhost:61234: Operation timed out.
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+target remote localhost:61234
+
+Error message from debugger back end:
+localhost:61234: Operation timed out.
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:334)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1040)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1243)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: java.lang.Exception: localhost:61234: Operation timed out.
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10004 2024-10-02 15:48:52.173
+!MESSAGE Failed to execute MI command:
+target remote localhost:61234
+
+Error message from debugger back end:
+localhost:61234: Operation timed out.
+!STACK 0
+java.lang.Exception: localhost:61234: Operation timed out.
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:00:49.633
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 10 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:00:49.635
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:00:49.636
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 10 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:00:49.636
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:03:54.876
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 11 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:03:54.878
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:03:54.879
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 11 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:03:54.879
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:33:47.414
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 24 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:33:47.416
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:33:47.417
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 24 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:33:47.417
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:47:21.487
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 33 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:47:21.488
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:47:21.489
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 33 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:47:21.489
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:50:07.070
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 35 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:50:07.071
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:50:07.072
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 35 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-10-02 16:50:07.072
+!MESSAGE Existing sessions are:
