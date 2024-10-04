@@ -9,7 +9,6 @@ gpio.setmode(gpio.BCM)
 gpio.setup(8, gpio.OUT)
 gpio.output(8, gpio.HIGH)
 
-
 # SLAVE ACTIVATE
 def activateSlave(state):
   gpio.output(8, not state)
@@ -36,13 +35,15 @@ def main(bus, cs):
   # MAIN LOOP
   try:
     while True:
-      for i in range (4):
+      for i in range (11):
         activateSlave(True)
         txBufferData = [i] # data to send
-        spiRx() # receive data
-        sleep(0.5)
         spiTx(txBufferData) # send data
+        sleep(0.5)
+        spiRx() # receive data
+        sleep(0.1)
         activateSlave(False)
+        print("")
         sleep(1)
   except KeyboardInterrupt:
     print(" Exiting")
