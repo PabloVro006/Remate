@@ -3,8 +3,8 @@
 </h1>
 
 <h3 align="center">The first bin smarter than you 🧠</h3>
-<br/>
 <div align="center">
+    
  ♻ **Automated waste segregation**
 
  🇮🇹 **Made in Italy**
