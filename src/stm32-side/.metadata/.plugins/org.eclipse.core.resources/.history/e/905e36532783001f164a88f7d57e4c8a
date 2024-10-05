@@ -1,0 +1,10 @@
+#include "config.h"
+
+void startUp(){
+	uint8_t spiRxBuffer = 0;
+	uint8_t paddleMotorState = 1;
+	startDisplay();
+	uint8_t diskState[4] = {0,0,0,5};
+	static const int motors[] = {0, 1, -1};
+	//turnMotorsOff(motors);
+}

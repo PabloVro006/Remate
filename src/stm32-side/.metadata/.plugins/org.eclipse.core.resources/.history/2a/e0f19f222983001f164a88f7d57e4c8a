@@ -1,0 +1,12 @@
+#include "config.h"
+
+static void startUp() {
+	paddleMotorState = 1;
+	startDisplay();
+	for (int i = 0; i<3; i++){
+		diskState[i] = 0;
+	}
+	diskState[3] = 5;
+	static const int motors[] = {0, 1, -1};
+	//turnMotorsOff(motors);
+}

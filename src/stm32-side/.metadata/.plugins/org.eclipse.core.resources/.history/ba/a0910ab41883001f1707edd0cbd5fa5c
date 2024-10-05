@@ -1,0 +1,11 @@
+#include "display.h"
+
+
+static void startUp(){
+	spiRxBuffer = 0;
+	paddleMotorState = 1;
+	startDisplay();
+	diskState = {0,0,0,5};
+	static const int motors[] = {0, 1, -1};
+	turnMotorsOff(motors);
+}

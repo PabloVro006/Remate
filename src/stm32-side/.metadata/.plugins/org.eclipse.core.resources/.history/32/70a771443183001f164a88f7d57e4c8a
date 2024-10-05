@@ -1,0 +1,42 @@
+#ifndef INC_MOTOR_H_
+#define INC_MOTOR_H_
+
+#include "config.h"
+#include "hall.h"
+
+typedef struct{
+	GPIO_TypeDef* GPIO_COUNTER_Port;
+	GPIO_TypeDef* GPIO_CLOCK_Port;
+	GPIO_TypeDef* GPIO_HALL_Port;
+	uint16_t GPIO_COUNTER_Pin;
+	uint16_t GPIO_CLOCK_Pin;
+	uint16_t GPIO_HALL_Pin;
+} mstruct;
+
+static const mstruct motorData[] = {
+	{
+		COUNTER_DISK_RELAY_GPIO_Port,
+		CLOCK_DISK_RELAY_GPIO_Port,
+		DISK_HALL_GPIO_Port,
+		COUNTER_DISK_RELAY_Pin,
+		CLOCK_DISK_RELAY_Pin,
+		DISK_HALL_Pin,
+	},
+	{
+		COUNTER_CROSS_RELAY_GPIO_Port,
+		CLOCK_CROSS_RELAY_GPIO_Port,
+		CROSS_HALL_GPIO_Port,
+		COUNTER_CROSS_RELAY_Pin,
+		CLOCK_CROSS_RELAY_Pin,
+		CROSS_HALL_Pin,
+	}
+};
+
+void turnMotorsOff(const int motorIndexes[]);
+void controlPaddleMotor();
+void rotation(const uint8_t motorIndex, const uint8_t rotationDirection, const uint8_t times);
+void throwPaper();
+void throwPaperPlastic();
+void normalThrow(const uint8_t motorIndex, const uint8_t diskSpace, const uint8_t order);
+
+#endif /* INC_MOTOR_H_ */

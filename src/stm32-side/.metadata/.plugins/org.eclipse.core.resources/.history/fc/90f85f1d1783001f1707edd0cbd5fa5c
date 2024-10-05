@@ -1,0 +1,6 @@
+
+static void startUp(){
+	spiRxBuffer = 0;
+	paddleMotorState = 1;
+	diskState[4] = {0,0,0,5};
+}

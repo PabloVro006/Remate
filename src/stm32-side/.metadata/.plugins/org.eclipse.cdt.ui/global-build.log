@@ -1,140 +1,27 @@
-16:42:49 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
+17:48:40 **** Incremental Build of configuration Debug for project mainF411_Board ****
 make -j9 all 
+arm-none-eabi-gcc "../Core/Src/hall.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/hall.d" -MT"Core/Src/hall.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/hall.o"
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "spiFullDuplexCommTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/spiFullDuplexCommTest/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spiFullDuplexCommTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: spiFullDuplexCommTest.elf
- 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-arm-none-eabi-objdump -h -S spiFullDuplexCommTest.elf  > "spiFullDuplexCommTest.list"
-   text	   data	    bss	    dec	    hex	filename
-  23016	     40	   2776	  25832	   64e8	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-Finished building: spiFullDuplexCommTest.list
- 
-16:42:52 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-   text	   data	    bss	    dec	    hex	filename
-  23016	     40	   2776	  25832	   64e8	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-16:47:14 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "spiFullDuplexCommTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/spiFullDuplexCommTest/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spiFullDuplexCommTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: spiFullDuplexCommTest.elf
- 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-arm-none-eabi-objdump -h -S spiFullDuplexCommTest.elf  > "spiFullDuplexCommTest.list"
-   text	   data	    bss	    dec	    hex	filename
-  23040	     44	   2780	  25864	   6508	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-Finished building: spiFullDuplexCommTest.list
- 
-16:49:11 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "spiFullDuplexCommTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/spiFullDuplexCommTest/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spiFullDuplexCommTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: spiFullDuplexCommTest.elf
- 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-arm-none-eabi-objdump -h -S spiFullDuplexCommTest.elf  > "spiFullDuplexCommTest.list"
-   text	   data	    bss	    dec	    hex	filename
-  22356	     32	   2776	  25164	   624c	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-Finished building: spiFullDuplexCommTest.list
- 
-16:50:00 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "spiFullDuplexCommTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/spiFullDuplexCommTest/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spiFullDuplexCommTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: spiFullDuplexCommTest.elf
- 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-arm-none-eabi-objdump -h -S spiFullDuplexCommTest.elf  > "spiFullDuplexCommTest.list"
-   text	   data	    bss	    dec	    hex	filename
-  22356	     32	   2776	  25164	   624c	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-Finished building: spiFullDuplexCommTest.list
- 
-16:50:48 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "spiFullDuplexCommTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/spiFullDuplexCommTest/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spiFullDuplexCommTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: spiFullDuplexCommTest.elf
- 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-arm-none-eabi-objdump -h -S spiFullDuplexCommTest.elf  > "spiFullDuplexCommTest.list"
-   text	   data	    bss	    dec	    hex	filename
-  23024	     40	   2776	  25840	   64f0	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-Finished building: spiFullDuplexCommTest.list
- 
-16:53:02 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "spiFullDuplexCommTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/spiFullDuplexCommTest/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spiFullDuplexCommTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: spiFullDuplexCommTest.elf
- 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-arm-none-eabi-objdump -h -S spiFullDuplexCommTest.elf  > "spiFullDuplexCommTest.list"
-   text	   data	    bss	    dec	    hex	filename
-  21520	     40	   2776	  24336	   5f10	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-Finished building: spiFullDuplexCommTest.list
- 
-16:54:48 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "spiFullDuplexCommTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/spiFullDuplexCommTest/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spiFullDuplexCommTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: spiFullDuplexCommTest.elf
- 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-arm-none-eabi-objdump -h -S spiFullDuplexCommTest.elf  > "spiFullDuplexCommTest.list"
-   text	   data	    bss	    dec	    hex	filename
-  21524	     40	   2776	  24340	   5f14	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-Finished building: spiFullDuplexCommTest.list
- 
-16:55:50 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-   text	   data	    bss	    dec	    hex	filename
-  21524	     40	   2776	  24340	   5f14	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-16:59:45 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "spiFullDuplexCommTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/spiFullDuplexCommTest/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spiFullDuplexCommTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: spiFullDuplexCommTest.elf
- 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-arm-none-eabi-objdump -h -S spiFullDuplexCommTest.elf  > "spiFullDuplexCommTest.list"
-   text	   data	    bss	    dec	    hex	filename
-  22948	     40	   2776	  25764	   64a4	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-Finished building: spiFullDuplexCommTest.list
- 
-17:00:39 **** Incremental Build of configuration Debug for project spiFullDuplexCommTest ****
-make -j9 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "spiFullDuplexCommTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/spiFullDuplexCommTest/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spiFullDuplexCommTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: spiFullDuplexCommTest.elf
- 
-arm-none-eabi-size  spiFullDuplexCommTest.elf 
-arm-none-eabi-objdump -h -S spiFullDuplexCommTest.elf  > "spiFullDuplexCommTest.list"
-   text	   data	    bss	    dec	    hex	filename
-  22952	     40	   2776	  25768	   64a8	spiFullDuplexCommTest.elf
-Finished building: default.size.stdout
- 
-Finished building: spiFullDuplexCommTest.list
- 
+arm-none-eabi-gcc "../Core/Src/motor.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/motor.d" -MT"Core/Src/motor.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/motor.o"
+In file included from ../Core/Inc/hall.h:5,
+                 from ../Core/Inc/motor.h:5,
+                 from ../Core/Src/motor.c:1:
+../Core/Inc/config.h: In function 'startUp':
+../Core/Inc/config.h:14:9: warning: implicit declaration of function 'turnMotorsOff' [-Wimplicit-function-declaration]
+   14 |         turnMotorsOff(motors);
+      |         ^~~~~~~~~~~~~
+../Core/Inc/motor.h: At top level:
+../Core/Inc/motor.h:35:6: warning: conflicting types for 'turnMotorsOff'; have 'void(const int *)'
+   35 | void turnMotorsOff(const int motorIndexes[]);
+      |      ^~~~~~~~~~~~~
+../Core/Inc/config.h:14:9: note: previous implicit declaration of 'turnMotorsOff' with type 'void(const int *)'
+   14 |         turnMotorsOff(motors);
+      |         ^~~~~~~~~~~~~
+arm-none-eabi-gcc -o "mainF411_Board.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainF411_Board/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mainF411_Board.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.macos64_1.0.200.202406191456/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld: ./Core/Src/main.o:/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainF411_Board/Debug/../Core/Inc/config.h:8: multiple definition of `paddleMotorState'; ./Core/Src/hall.o:/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainF411_Board/Debug/../Core/Inc/config.h:8: first defined here
+/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.macos64_1.0.200.202406191456/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld: ./Core/Src/main.o:/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainF411_Board/Debug/../Core/Inc/config.h:9: multiple definition of `diskState'; ./Core/Src/hall.o:/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainF411_Board/Debug/../Core/Inc/config.h:9: first defined here
+/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.macos64_1.0.200.202406191456/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld: ./Core/Src/motor.o:/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainF411_Board/Debug/../Core/Inc/config.h:8: multiple definition of `paddleMotorState'; ./Core/Src/hall.o:/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainF411_Board/Debug/../Core/Inc/config.h:8: first defined here
+/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.macos64_1.0.200.202406191456/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld: ./Core/Src/motor.o:/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainF411_Board/Debug/../Core/Inc/config.h:9: multiple definition of `diskState'; ./Core/Src/hall.o:/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainF411_Board/Debug/../Core/Inc/config.h:9: first defined here
+collect2: error: ld returned 1 exit status
+make: *** [makefile:64: mainF411_Board.elf] Error 1
+"make -j9 all" terminated with exit code 2. Build might be incomplete.

@@ -1,0 +1,12 @@
+#ifndef INC_CONFIG_H_
+#define INC_CONFIG_H_
+
+#include "main.h"
+
+extern uint8_t paddleMotorState;
+extern uint8_t diskState[4];
+
+static void startUp();
+static inline void rotateList();
+
+#endif /* INC_CONFIG_H_ */

@@ -1,0 +1,8 @@
+#include "motor.h"
+
+void turnMotorsOff(const int motorIndexes[]){
+	for (int i=0; motorIndexes[i] != -1; i++){
+		HAL_GPIO_WritePin(motorData[i].GPIO_COUNTER_Port, motorData[i].GPIO_COUNTER_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(motorData[i].GPIO_CLOCK_Port, motorData[i].GPIO_CLOCK_Pin, GPIO_PIN_SET);
+	}
+}

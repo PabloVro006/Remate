@@ -1,0 +1,8 @@
+#ifndef INC_CONFIG_H_
+#define INC_CONFIG_H_
+
+extern uint8_t spiRxBuffer;
+extern uint8_t paddleMotorState;
+extern uint8_t diskState[4];
+
+#endif /* INC_CONFIG_H_ */

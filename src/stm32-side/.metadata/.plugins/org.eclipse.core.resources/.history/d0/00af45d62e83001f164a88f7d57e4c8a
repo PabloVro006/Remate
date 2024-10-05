@@ -1,0 +1,23 @@
+#ifndef INC_CONFIG_H_
+#define INC_CONFIG_H_
+
+#include "main.h"
+#include "display.h"
+#include "motor.h"
+
+uint8_t paddleMotorState = 1;
+uint8_t diskState[4] = {0,0,0,5};
+
+static inline void startUp() {
+	startDisplay();
+	static const int motors[] = {0, 1, -1};
+	turnMotorsOff(motors)
+}
+
+static inline void rotateList(){
+	diskState[2] = diskState[1];
+	diskState[1] = diskState[0];
+	diskState[0] = 0;
+}
+
+#endif /* INC_CONFIG_H_ */

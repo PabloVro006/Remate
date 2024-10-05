@@ -1,0 +1,26 @@
+#ifndef INC_MOTOR_H_
+#define INC_MOTOR_H_
+
+#include "main.h"
+
+typedef struct{
+	GPIO_TypeDef* GPIO_COUNTER_Port;
+	GPIO_TypeDef* GPIO_CLOCK_Port;
+	GPIO_TypeDef* GPIO_HALL_Port;
+	uint16_t GPIO_COUNTER_Pin;
+	uint16_t GPIO_CLOCK_Pin;
+	uint16_t GPIO_HALL_Pin;
+} mstruct;
+
+static const mstruct motorData[] = {
+	{
+		COUNTER_DISK_RELAY_Port,
+		CLOCK_DISK_RELAY_Port,
+		DISK_HALL_Port,
+		COUNTER_DISK_RELAY_Pin,
+		CLOCK_DISK_RELAY_Pin,
+		DISK_HALL_Pin,
+	}
+};
+
+#endif /* INC_MOTOR_H_ */

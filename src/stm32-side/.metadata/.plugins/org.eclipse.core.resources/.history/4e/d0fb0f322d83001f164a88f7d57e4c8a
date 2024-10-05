@@ -1,0 +1,10 @@
+#include "hall.h"
+
+uint8_t hallCheck(GPIO_TypeDef* port, const uint16_t pin){
+	GPIO_PinState sensorState = HAL_GPIO_ReadPin(DISK_HALL_GPIO_Port, DISK_HALL_Pin);
+	if (sensorState == GPIO_PIN_RESET) {
+		state = 1;
+	}else{
+		state = 0;
+	}
+}

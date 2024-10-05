@@ -1,0 +1,9 @@
+#ifndef INC_HALL_H_
+#define INC_HALL_H_
+
+#include "main.h"
+
+uint8_t state = 0;
+bool hallCheck(GPIO_TypeDef* port, const uint16_t pin);
+
+#endif /* INC_HALL_H_ */

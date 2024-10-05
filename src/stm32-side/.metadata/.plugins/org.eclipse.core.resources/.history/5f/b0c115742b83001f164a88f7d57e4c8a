@@ -1,0 +1,43 @@
+#include "motor.h"
+
+void turnMotorsOff(const int motorIndexes[]){
+	for (int i=0; motorIndexes[i] != -1; i++){
+		HAL_GPIO_WritePin(motorData[i].GPIO_COUNTER_Port, motorData[i].GPIO_COUNTER_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(motorData[i].GPIO_CLOCK_Port, motorData[i].GPIO_CLOCK_Pin, GPIO_PIN_SET);
+	}
+}
+
+void rotation(const uint8_t motorIndex, const uint8_t rotationDirection, const uint8_t times){
+	int* motors = (int*) calloc(2, sizeof(int));
+	for(int i=0; i<times; i++){
+		HAL_GPIO_WritePin(motorData[motorIndex].GPIO_COUNTER_Port, motorData[motorIndex].GPIO_COUNTER_Pin, !rotationDirection);
+		HAL_GPIO_WritePin(motorData[motorIndex].GPIO_CLOCK_Port, motorData[motorIndex].GPIO_CLOCK_Pin, rotationDirection);
+		HAL_Delay(900);
+		while(hallCheck){
+			HAL_GPIO_WritePin(motorData[motorIndex].GPIO_COUNTER_Port, motorData[motorIndex].GPIO_COUNTER_Pin, !rotationDirection);
+			HAL_GPIO_WritePin(motorData[motorIndex].GPIO_CLOCK_Port, motorData[motorIndex].GPIO_CLOCK_Pin, rotationDirection);
+		}
+		motors[0] = (int)motorIndex;
+		motors[1] = -1;
+		turnMotorsOff(motors);
+	}
+	free(motors);
+}
+
+void trhowPaper(){
+	rotation(0,0,2);
+	rotation(0,1,2);
+	diskState[2] = diskState[1] = 0;
+}
+
+void throwPaperPlastic(){
+	rotation(0,1,4);
+	for(int i=0; i<3; i++){
+		diskState[i] = 0;
+	}
+	diskState[3] = 5;
+}
+
+void normalThrow(const uint8_t motorIndex, const uint8_t diskSpace, const uint8_t order){
+
+}

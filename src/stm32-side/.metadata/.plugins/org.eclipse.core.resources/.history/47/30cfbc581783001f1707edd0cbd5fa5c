@@ -1,0 +1,14 @@
+#ifndef INC_CONFIG_H_
+#define INC_CONFIG_H_
+
+extern uint8_t spiRxBuffer;
+extern uint8_t spiTxBuffer;
+extern uint8_t paddleMotorState;
+extern uint8_t diskState[4];
+
+static void startUp();
+static uint8_t getTrashFromPi();
+static uint8_t sendRxToPi();
+static inline void rotateList();
+
+#endif /* INC_CONFIG_H_ */

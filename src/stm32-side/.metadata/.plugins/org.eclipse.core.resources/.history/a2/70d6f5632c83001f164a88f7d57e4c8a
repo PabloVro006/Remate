@@ -1,0 +1,4 @@
+
+bool hallCheck(const GPIO_TypeDef* port, const uint16_t pin){
+	HAL_GPIO_ReadPin(port, pin);
+}

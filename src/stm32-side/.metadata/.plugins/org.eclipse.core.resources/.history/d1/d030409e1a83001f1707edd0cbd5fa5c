@@ -1,0 +1,19 @@
+#ifndef INC_MOTOR_H_
+#define INC_MOTOR_H_
+
+typedef struct{
+	GPIO_TypeDef* GPIO_COUNTER_Port;
+	GPIO_TypeDef* GPIO_CLOCK_Port;
+	GPIO_TypeDef* GPIO_HALL_Port;
+	uint16_t GPIO_COUNTER_Pin;
+	uint16_t GPIO_CLOCK_Pin;
+	uint16_t GPIO_HALL_Pin;
+} mstruct;
+
+static const mstruct motorData[] = {
+	{
+		COUNTE
+	}
+};
+
+#endif /* INC_MOTOR_H_ */

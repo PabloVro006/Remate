@@ -1,0 +1,5 @@
+../Core/Src/motor.c:3:6:turnMotorsOff	2
+../Core/Src/motor.c:10:6:rotation	3
+../Core/Src/motor.c:27:6:trhowPaper	1
+../Core/Src/motor.c:33:6:throwPaperPlastic	2
+../Core/Src/motor.c:41:6:normalThrow	1

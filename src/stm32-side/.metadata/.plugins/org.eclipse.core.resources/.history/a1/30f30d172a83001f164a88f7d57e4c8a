@@ -1,0 +1,7 @@
+#include "motor.h"
+
+void turnMotorsOff(const int motorsIndexes[]){
+	for (int i=0; motorIndexes[i] != -1; i++){
+
+	}
+}
