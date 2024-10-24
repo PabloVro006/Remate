@@ -9,6 +9,7 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="/Users/pablo/Developer/GitHub/Remate/src/stm32-side/mainf405_chip"/>
 			<item value="/Users/pablo/Developer/STM32/Projects/SpiTestF411_v0.1"/>
 		</list>
 	</section>

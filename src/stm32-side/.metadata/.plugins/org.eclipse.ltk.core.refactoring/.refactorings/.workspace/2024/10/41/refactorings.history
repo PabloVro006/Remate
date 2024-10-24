@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;mainf405_chip&apos;" deleteContents="true" description="Delete resource &apos;mainf405_chip&apos;" element1="/mainf405_chip" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1728289594338"/>
+</session>
