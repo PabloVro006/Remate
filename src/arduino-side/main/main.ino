@@ -12,13 +12,24 @@ int hallCross = A1;
 // PADDLE SETUP
 int paddleMotorState = 1;
 
-// TRASHING SETUP
-int diskState[4] = {0, 0, 0, 5};  // empty, empty, empty, hole
-
 // CONSTANTS
 const int hallThresholdLow = 490;
 const int hallThresholdHigh = 550;
 const int rotationDelayMs = 900;
+const int feedbackOk = 42;
+
+// ENUM FOR TRASH TYPES
+enum TrashType {
+  TRASH_NONE = 0,
+  TRASH_PLASTIC = 1,
+  TRASH_PAPER = 2,
+  TRASH_METAL = 3,
+  TRASH_NR = 4,
+  EMPTY = 5
+};
+
+// TRASHING SETUP
+int diskState[4] = {TRASH_NONE, TRASH_NONE, TRASH_NONE, EMPTY};  // empty, empty, empty, hole
 
 // MOTOR STRUCT
 typedef struct {
@@ -73,12 +84,12 @@ void setup() {
 void loop() {
   // CONTROL PADDLE
   // Set motor state (off/on)
-  paddleMotorState = (diskState[0] == 0) ? 1 : 0;
+  paddleMotorState = (diskState[0] == TRASH_NONE) ? 1 : 0;
 
   // Get trash
   int trash = getTrashFromPi();
   // Now control the paddle movement
-  if (trash != 0) {
+  if (trash != TRASH_NONE) {
     controlPaddleMotor(0);
     diskState[0] = trash;
   } else {
@@ -87,53 +98,53 @@ void loop() {
 
   // INITIAL CHECK
   // Check for paper + plastic combo
-  if (diskState[1] == 2 && diskState[0] == 1) {
+  if (diskState[1] == TRASH_PAPER && diskState[0] == TRASH_PLASTIC) {
     controlPaddleMotor(0);
     throwPaperPlastic();
     controlPaddleMotor(paddleMotorState);
-    sendFeedbackToPi(42);
+    sendFeedbackToPi(feedbackOk);
   }
   // Check for metal + paper combo
-  else if (diskState[2] == 3 && diskState[1] == 2) {
+  else if (diskState[2] == TRASH_METAL && diskState[1] == TRASH_PAPER) {
     controlPaddleMotor(0);
     throwPaper();
     controlPaddleMotor(paddleMotorState);
-    sendFeedbackToPi(42);
+    sendFeedbackToPi(feedbackOk);
   }
   // Check for metal
-  else if (diskState[2] == 3) {
+  else if (diskState[2] == TRASH_METAL) {
     controlPaddleMotor(0);
     normalThrow(0, 2, 0);
     controlPaddleMotor(paddleMotorState);
-    sendFeedbackToPi(42);
+    sendFeedbackToPi(feedbackOk);
   }
   // Check for paper
-  else if (diskState[1] == 2) {
+  else if (diskState[1] == TRASH_PAPER) {
     controlPaddleMotor(0);
     throwPaper();
     controlPaddleMotor(paddleMotorState);
-    sendFeedbackToPi(42);
+    sendFeedbackToPi(feedbackOk);
   }
 
   // NORMAL CASE
   switch (trash) {
-    case 1:
+    case TRASH_PLASTIC:
       normalThrow(0, 0, 1);
-      sendFeedbackToPi(42);
+      sendFeedbackToPi(feedbackOk);
       break;
-    case 2:
+    case TRASH_PAPER:
       rotateMotor(1, 1, 1);
-      sendFeedbackToPi(42);
+      sendFeedbackToPi(feedbackOk);
       rotateList();
       break;
-    case 3:
+    case TRASH_METAL:
       rotateMotor(1, 1, 1);
-      sendFeedbackToPi(42);
+      sendFeedbackToPi(feedbackOk);
       rotateList();
       break;
-    case 4:
+    case TRASH_NR:
       normalThrow(1, 0, 0);
-      sendFeedbackToPi(42);
+      sendFeedbackToPi(feedbackOk);
       break;
     default:
       delay(10);
@@ -161,21 +172,18 @@ void controlPaddleMotor(int motorController) {
 }
 
 // Disk & cross rotation
-void rotateMotor(const uint8_t motorIndex, const uint8_t rotationDirection, const uint8_t times){
-	int* motors = (int*) calloc(2, sizeof(int));
-	for(int i=0; i<times; i++){
-		digitalWrite(motorData[motorIndex].COUNTER_RELAY, !rotationDirection);
-		digitalWrite(motorData[motorIndex].CLOCK_RELAY, rotationDirection);
-		delay(rotationDelayMs);
-		while(hallCheck(motorData[motorIndex].HALL){
-			digitalWrite(motorData[motorIndex].COUNTER_RELAY, !rotationDirection);
-			digitalWrite(motorData[motorIndex].CLOCK_RELAY, rotationDirection);
-		}
-		motors[0] = (int)motorIndex;
-		motors[1] = -1;
-		turnMotorsOff(motors);
-	}
-	free(motors);
+void rotateMotor(const uint8_t motorIndex, const uint8_t rotationDirection, const uint8_t times) {
+  int motors[2] = {(int)motorIndex, -1};
+  for (int i = 0; i < times; i++) {
+    digitalWrite(motorData[motorIndex].COUNTER_RELAY, !rotationDirection);
+    digitalWrite(motorData[motorIndex].CLOCK_RELAY, rotationDirection);
+    delay(rotationDelayMs);
+    while (hallCheck(motorData[motorIndex].HALL)) {
+      digitalWrite(motorData[motorIndex].COUNTER_RELAY, !rotationDirection);
+      digitalWrite(motorData[motorIndex].CLOCK_RELAY, rotationDirection);
+    }
+    turnMotorsOff(motors);
+  }
 }
 
 // THROWING FUNCTION
@@ -183,41 +191,42 @@ void rotateMotor(const uint8_t motorIndex, const uint8_t rotationDirection, cons
 void throwPaper(){
 	rotateMotor(0,0,2);
 	rotateMotor(0,1,2);
-	diskState[2] = diskState[1] = 0;
+	diskState[2] = diskState[1] = TRASH_NONE;
 }
 // Disk rotate 4 times clock wise
-void throwPaperPlastic(){
-	rotateMotor(0,1,4);
-	for(int i=0; i<3; i++){
-		diskState[i] = 0;
-	}
-	diskState[3] = 5;
+void throwPaperPlastic() {
+  rotateMotor(0, 1, 4);
+  memset(diskState, TRASH_NONE, 3 * sizeof(int));
+  diskState[3] = TRASH_EMPTY;
 }
 
 // Generic function for throw both plastic & nr
 void normalThrow(const uint8_t motorIndex, const uint8_t diskSpace, const uint8_t order){
 	rotateMotor(motorIndex,order,1);
 	rotateMotor(motorIndex,!order,1);
-	diskState[diskSpace] = 0;
+	diskState[diskSpace] = TRASH_NONE;
 }
 
 // Rotate element in diskState[]
 void rotateList() {
   diskState[2] = diskState[1];
   diskState[1] = diskState[0];
-  diskState[0] = 0;
+  diskState[0] = TRASH_NONE;
 }
 
 // RPI4 COMMUNICATION
 // Get trash from Rpi4
 int getTrashFromPi() {
-  int trashGet = 0;
+  int trashGet = TRASH_NONE;
   if (Serial.available() > 0) {
     // Turn off paddle motor until the arduino read from serial
     //paddleMotorStopped = 1;
     // Get serial input
     String trashStr = Serial.readStringUntil('\n');
     trashGet = trashStr.toInt();
+    if (trashGet < TRASH_NONE || trashGet > TRASH_NR) {
+      trashGet = TRASH_NONE;  // Reset to default if invalid
+    }
   }
   return trashGet;  // Return serial input
 }
