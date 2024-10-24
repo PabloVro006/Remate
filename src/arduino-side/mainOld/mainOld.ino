@@ -11,6 +11,7 @@ int clockCrossRelay = 7;
 // Paddle relay
 int paddleRelay = 12;
 
+// LCD SETUP
 LiquidCrystal_I2C lcd(0x27,  16, 2);
 
 // HALL SETUP
@@ -35,6 +36,7 @@ void throwPaperPlasticCombo();                                                 /
 void normalThrow(int counterRelay, int clockRelay, int diskSpace, int order);  // Throw plastic or nr
 void rotateList();                                                             // Make element in diskState rotate
 int getTrashFromPi();                                                          // Get serial input from Rpi4
+void sendFeedbackToPi(int feedbackNumber);                                     // Send the feedback to Rpi4
 
 // SETUP
 void setup() {
@@ -99,41 +101,49 @@ void loop() {
     paddleMotor(0);
     throwPaperPlasticCombo();
     paddleMotor(paddleMotorState);
+    sendFeedbackToPi()
   }
   // Check for metal + paper combo
   else if (diskState[2] == 3 && diskState[1] == 2) {
     paddleMotor(0);
     throwPaper();
     paddleMotor(paddleMotorState);
+    sendFeedbackToPi()
   }
   // Check for metal
   else if (diskState[2] == 3) {
     paddleMotor(0);
     normalThrow(counterDiskRelay, clockDiskRelay, 2, 0);
     paddleMotor(paddleMotorState);
+    sendFeedbackToPi()
   }
   // Check for paper
   else if (diskState[1] == 2) {
     paddleMotor(0);
     throwPaper();
     paddleMotor(paddleMotorState);
+    sendFeedbackToPi()
   }
 
   // NORMAL CASE
   switch (trash) {
     case 1:
       normalThrow(counterDiskRelay, clockDiskRelay, 0, 1);
+      sendFeedbackToPi()
       break;
     case 2:
       rotation(counterCrossRelay, clockCrossRelay, 1);
+      sendFeedbackToPi()
       rotateList();
       break;
     case 3:
       rotation(counterCrossRelay, clockCrossRelay, 1);
+      sendFeedbackToPi()
       rotateList();
       break;
     case 4:
       normalThrow(counterCrossRelay, clockCrossRelay, 0, 0);
+      sendFeedbackToPi()
       break;
     default:
       delay(10);
@@ -213,8 +223,8 @@ void rotateList() {
   diskState[0] = 0;
 }
 
-// RASPBERRY COMMUNICATION
-// Get trash from raspberry
+// RPI4 COMMUNICATION
+// Get trash from Rpi4
 int getTrashFromPi() {
   int trashGet = 0;
   if (Serial.available() > 0) {
@@ -224,7 +234,11 @@ int getTrashFromPi() {
     // Get serial input
     String trashStr = Serial.readStringUntil('\n');
     trashGet = trashStr.toInt();
-
   }
   return trashGet;  // Return serial input
+}
+// Send the feedback to Rpi4
+void sendFeedbackToPi(int feedbackNumber){
+  Serial.println(feedbackNumber);
+  delay(20);
 }

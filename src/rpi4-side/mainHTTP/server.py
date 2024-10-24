@@ -88,14 +88,21 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.serial.write((str(class_predicted) + '\n').encode())
 
             # this clears the buffer (?)
-            read_value = self.serial.read(self.serial.in_waiting).decode('ascii')
+            # read_value = self.serial.read(self.serial.in_waiting).decode('ascii')
             while True:
                 print('ENTERED WHILE TRUE')
                 if self.serial.in_waiting > 0:
                     print('ENTERED CONDITION')
+                    received_data = self.serial.readline().decode('utf-8').strip()
+                    print(f"Received: {received_data}")
+                    if received_data == "42": break
+
+                '''
+                if self.serial.in_waiting > 0:
+                    print('ENTERED CONDITION')
                     read_value = self.serial.read(self.serial.in_waiting).decode('ascii')
-                
-                if read_value == "42": break                        
+                if read_value == "42": break
+                '''
 
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
