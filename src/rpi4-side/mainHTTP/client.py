@@ -10,7 +10,6 @@ detection_model = YOLO('detection.pt')
 classification_model = YOLO('classification.pt')
 streak = deque(maxlen=10)
 
-
 # URL of the MJPEG stream (you need to adjust this to your actual stream URL)
 url = 'http://192.168.1.79:8000/stream.mjpg'
 
@@ -81,7 +80,7 @@ if get_response.status_code == 200:
                     print('culetto')
                     # while non arriva la response: sleep
                     while not post_response.headers: 
-                        sleep(1)
+                        sleep(0.1)
                         print('b')
                     
                     if post_response.status_code == 200:

@@ -79,25 +79,23 @@ class StreamingHandler(SimpleHTTPRequestHandler):
         self.received = json.loads(field_data)
         print('Dati ricevuti dal client: ', self.received)
         data = self.received[11:14]
+        # data = self.received.get('predicted_class', '0.0')
         
-
         # Saves the predicted class
         if data != '0.0':
-            print(data)
             class_predicted = int(float(data))
-            print('A' + str(class_predicted))
-        
-        if class_predicted != 0: 
-                print('culooo')
-                self.serial.write((str(class_predicted) + '\n').encode())
-                read_value = self.serial.read(self.serial.in_waiting).decode('ascii')
-                while True:
-                    if self.serial.in_waiting > 0:
-                        print('eo')
-                        read_value = self.serial.read(self.serial.in_waiting).decode('ascii')
+            print('CLASS PREDICTED: ' + str(class_predicted))
+            self.serial.write((str(class_predicted) + '\n').encode())
 
-                    if read_value == b'42': break
-                        
+            # this clears the buffer (?)
+            read_value = self.serial.read(self.serial.in_waiting).decode('ascii')
+            while True:
+                print('ENTERED WHILE TRUE')
+                if self.serial.in_waiting > 0:
+                    print('ENTERED CONDITION')
+                    read_value = self.serial.read(self.serial.in_waiting).decode('ascii')
+                
+                if read_value == "42": break                        
 
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')

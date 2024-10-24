@@ -1,3 +1,4 @@
+// LIBRARIES
 #include <LiquidCrystal_I2C.h>
 
 // RELAY SETUP
@@ -11,9 +12,6 @@ int clockCrossRelay = 7;
 int paddleRelay = 12;
 
 LiquidCrystal_I2C lcd(0x27,  16, 2);
-
-//FILTERING SETUP
-int temp = 0;
 
 // HALL SETUP
 // Setting pin
@@ -43,8 +41,10 @@ void setup() {
   // Wait a bit
   delay(1000);
 
+  // LCD DISPLAY INITIALIZATION
   lcd.init();
   lcd.backlight();
+
   // SERIAL INITIALIZATION
   Serial.begin(115200);
 
@@ -137,12 +137,6 @@ void loop() {
       break;
     default:
       delay(10);
-  }
-  delay(1);
-
-  while (1) {
-    Serial.write('42');
-    delay(1000);
   }
 }
 
