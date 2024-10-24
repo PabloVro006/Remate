@@ -1,18 +1,27 @@
+/*
 // LIBRARIES
 #include <LiquidCrystal_I2C.h>
+// LCD SETUP
+LiquidCrystal_I2C lcd(0x27,  16, 2);
+int counterDiskRelay = 2;
+int clockDiskRelay = 4;
+int counterCrossRelay = 8;
+int clockCrossRelay = 7;
+int paddleRelay = 12;
+// LCD DISPLAY INITIALIZATION
+lcd.init();
+lcd.backlight();
+*/
 
 // RELAY SETUP
 // Disk relay
-int counterDiskRelay = 2;
-int clockDiskRelay = 4;
+#define COUNTER_DISK_RELAY 2
+#define CLOCK_DISK_RELAY 4
 // Cross relay
-int counterCrossRelay = 8;
-int clockCrossRelay = 7;
+#define COUNTER_CROSS_RELAY 8
+#define CLOCK_CROSS_RELAY 7
 // Paddle relay
-int paddleRelay = 12;
-
-// LCD SETUP
-LiquidCrystal_I2C lcd(0x27,  16, 2);
+#define PADDLE_RELAY 12
 
 // HALL SETUP
 // Setting pin
@@ -38,14 +47,31 @@ void rotateList();                                                             /
 int getTrashFromPi();                                                          // Get serial input from Rpi4
 void sendFeedbackToPi(int feedbackNumber);                                     // Send the feedback to Rpi4
 
+// DEFINING MOTOR STRUCT
+// Struct itself
+typedef struct {
+  int COUNTER_RELAY;
+  int CLOCK_RELAY;
+  int HALL;
+} mstruct;
+// Creation of motors using the struct
+static const mstruct motorData[] = {
+	{
+		COUNTER_DISK_RELAY,
+		CLOCK_DISK_RELAY,
+		hallDisk,
+	},
+	{
+		COUNTER_CROSS_RELAY,
+		CLOCK_CROSS_RELAY,
+		hallCross,
+	}
+};
+
 // SETUP
 void setup() {
   // Wait a bit
   delay(1000);
-
-  // LCD DISPLAY INITIALIZATION
-  lcd.init();
-  lcd.backlight();
 
   // SERIAL INITIALIZATION
   Serial.begin(115200);
@@ -101,49 +127,49 @@ void loop() {
     paddleMotor(0);
     throwPaperPlasticCombo();
     paddleMotor(paddleMotorState);
-    sendFeedbackToPi()
+    sendFeedbackToPi(42);
   }
   // Check for metal + paper combo
   else if (diskState[2] == 3 && diskState[1] == 2) {
     paddleMotor(0);
     throwPaper();
     paddleMotor(paddleMotorState);
-    sendFeedbackToPi()
+    sendFeedbackToPi(42);
   }
   // Check for metal
   else if (diskState[2] == 3) {
     paddleMotor(0);
     normalThrow(counterDiskRelay, clockDiskRelay, 2, 0);
     paddleMotor(paddleMotorState);
-    sendFeedbackToPi()
+    sendFeedbackToPi(42);
   }
   // Check for paper
   else if (diskState[1] == 2) {
     paddleMotor(0);
     throwPaper();
     paddleMotor(paddleMotorState);
-    sendFeedbackToPi()
+    sendFeedbackToPi(42);
   }
 
   // NORMAL CASE
   switch (trash) {
     case 1:
       normalThrow(counterDiskRelay, clockDiskRelay, 0, 1);
-      sendFeedbackToPi()
+      sendFeedbackToPi(42);
       break;
     case 2:
       rotation(counterCrossRelay, clockCrossRelay, 1);
-      sendFeedbackToPi()
+      sendFeedbackToPi(42);
       rotateList();
       break;
     case 3:
       rotation(counterCrossRelay, clockCrossRelay, 1);
-      sendFeedbackToPi()
+      sendFeedbackToPi(42);
       rotateList();
       break;
     case 4:
       normalThrow(counterCrossRelay, clockCrossRelay, 0, 0);
-      sendFeedbackToPi()
+      sendFeedbackToPi(42);
       break;
     default:
       delay(10);
