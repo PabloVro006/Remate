@@ -31,6 +31,8 @@ enum TrashType {
 
 // TRASHING SETUP
 int diskState[4] = {TRASH_NONE, TRASH_NONE, TRASH_NONE, EMPTY};  // empty, empty, empty, hole
+bool isRotating = false;
+int trash = TRASH_NONE;
 
 // MOTOR STRUCT
 typedef struct {
@@ -88,64 +90,82 @@ void loop() {
   paddleMotorState = (diskState[0] == TRASH_NONE) ? 1 : 0;
 
   // Get trash
-  int trash = getTrashFromPi();
-  // Now control the paddle movement
-  if (trash != TRASH_NONE) {
-    controlPaddleMotor(0);
-    diskState[0] = trash;
-  } else {
-    controlPaddleMotor(paddleMotorState);
+  if(!isRotating){
+    trash = getTrashFromPi();
+    // Now control the paddle movement
+    if (trash != TRASH_NONE) {
+      controlPaddleMotor(0);
+      diskState[0] = trash;
+    } else {
+      controlPaddleMotor(paddleMotorState);
+    }
   }
 
   // INITIAL CHECK
   // Check for paper + plastic combo
   if (diskState[1] == TRASH_PAPER && diskState[0] == TRASH_PLASTIC) {
+    isRotating = true;
     controlPaddleMotor(0);
     throwPaperPlastic();
     controlPaddleMotor(paddleMotorState);
     sendFeedbackToPi(feedbackOk);
+    isRotating = false;
   }
   // Check for metal + paper combo
   else if (diskState[2] == TRASH_METAL && diskState[1] == TRASH_PAPER) {
+    isRotating = true;
     controlPaddleMotor(0);
     throwPaper();
     controlPaddleMotor(paddleMotorState);
     sendFeedbackToPi(feedbackOk);
+    isRotating = false;
   }
   // Check for metal
   else if (diskState[2] == TRASH_METAL) {
+    isRotating = true;
     controlPaddleMotor(0);
     normalThrow(0, 2, 0);
     controlPaddleMotor(paddleMotorState);
     sendFeedbackToPi(feedbackOk);
+    isRotating = false;
   }
   // Check for paper
   else if (diskState[1] == TRASH_PAPER) {
+    isRotating = true;
     controlPaddleMotor(0);
     throwPaper();
     controlPaddleMotor(paddleMotorState);
     sendFeedbackToPi(feedbackOk);
+    isRotating = false;
   }
 
   // NORMAL CASE
   switch (trash) {
     case TRASH_PLASTIC:
+      isRotating = true;
       normalThrow(0, 0, 1);
       sendFeedbackToPi(feedbackOk);
+      isRotating = false;
       break;
     case TRASH_PAPER:
+      isRotating = true;
       rotateMotor(1, 1, 1);
       sendFeedbackToPi(feedbackOk);
       rotateList();
+      isRotating = false;
       break;
     case TRASH_METAL:
+      isRotating = true;
       rotateMotor(1, 1, 1);
       sendFeedbackToPi(feedbackOk);
       rotateList();
+      isRotating = false;
       break;
     case TRASH_NR:
+      isRotating = true;
       normalThrow(1, 0, 0);
       sendFeedbackToPi(feedbackOk);
+      isRotating = false;
       break;
     default:
       delay(10);
@@ -198,7 +218,7 @@ void throwPaper(){
 void throwPaperPlastic() {
   rotateMotor(0, 1, 4);
   memset(diskState, TRASH_NONE, 3 * sizeof(int));
-  diskState[3] = TRASH_EMPTY;
+  diskState[3] = EMPTY;
 }
 
 // Generic function for throw both plastic & nr
