@@ -110,7 +110,6 @@ void loop() {
     throwPaperPlastic();
     controlPaddleMotor(paddleMotorState);
     sendFeedbackToPi(feedbackOk);
-    isRotating = false;
   }
   // Check for metal + paper combo
   else if (diskState[2] == TRASH_METAL && diskState[1] == TRASH_PAPER) {
@@ -119,7 +118,6 @@ void loop() {
     throwPaper();
     controlPaddleMotor(paddleMotorState);
     sendFeedbackToPi(feedbackOk);
-    isRotating = false;
   }
   // Check for metal
   else if (diskState[2] == TRASH_METAL) {
@@ -128,7 +126,6 @@ void loop() {
     normalThrow(0, 2, 0);
     controlPaddleMotor(paddleMotorState);
     sendFeedbackToPi(feedbackOk);
-    isRotating = false;
   }
   // Check for paper
   else if (diskState[1] == TRASH_PAPER) {
@@ -137,7 +134,6 @@ void loop() {
     throwPaper();
     controlPaddleMotor(paddleMotorState);
     sendFeedbackToPi(feedbackOk);
-    isRotating = false;
   }
 
   // NORMAL CASE
@@ -146,27 +142,23 @@ void loop() {
       isRotating = true;
       normalThrow(0, 0, 1);
       sendFeedbackToPi(feedbackOk);
-      isRotating = false;
       break;
     case TRASH_PAPER:
       isRotating = true;
       rotateMotor(1, 1, 1);
       sendFeedbackToPi(feedbackOk);
       rotateList();
-      isRotating = false;
       break;
     case TRASH_METAL:
       isRotating = true;
       rotateMotor(1, 1, 1);
       sendFeedbackToPi(feedbackOk);
       rotateList();
-      isRotating = false;
       break;
     case TRASH_NR:
       isRotating = true;
       normalThrow(1, 0, 0);
       sendFeedbackToPi(feedbackOk);
-      isRotating = false;
       break;
     default:
       delay(10);
@@ -260,4 +252,6 @@ int getTrashFromPi() {
 void sendFeedbackToPi(int feedbackNumber){
   Serial.println(feedbackNumber);
   delay(serialDelay);
+  Serial.flush();
+  isRotating = false;
 }
