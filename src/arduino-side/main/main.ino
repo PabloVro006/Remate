@@ -13,6 +13,7 @@ int hallCross = A1;
 int paddleMotorState = 1;
 
 // CONSTANTS
+const int serialDelay = 20;
 const int hallThresholdLow = 490;
 const int hallThresholdHigh = 550;
 const int rotationDelayMs = 900;
@@ -233,5 +234,5 @@ int getTrashFromPi() {
 // Send the feedback to Rpi4
 void sendFeedbackToPi(int feedbackNumber){
   Serial.println(feedbackNumber);
-  delay(20);
+  delay(serialDelay);
 }
