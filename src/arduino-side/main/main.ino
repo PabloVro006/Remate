@@ -6,8 +6,8 @@
 #define PADDLE_RELAY 12
 
 // HALL SETUP
-int hallDisk = A0;
-int hallCross = A1;
+int HALL_DISK = A0;
+int HALL_CROSS = A1;
 
 // PADDLE SETUP
 int paddleMotorState = 1;
@@ -30,7 +30,7 @@ enum TrashType {
 };
 
 // TRASHING SETUP
-int diskState[4] = {TRASH_NONE, TRASH_NONE, TRASH_NONE, EMPTY};  // empty, empty, empty, hole
+int diskState[4] = {TRASH_NONE, TRASH_NONE, TRASH_NONE, EMPTY};
 bool isRotating = false;
 int trash = TRASH_NONE;
 
@@ -42,8 +42,8 @@ typedef struct {
 } MotorData;
 
 static const MotorData motorData[] = {
-  {COUNTER_DISK_RELAY, CLOCK_DISK_RELAY, hallDisk},
-  {COUNTER_CROSS_RELAY, CLOCK_CROSS_RELAY, hallCross}
+  {COUNTER_DISK_RELAY, CLOCK_DISK_RELAY, HALL_DISK},
+  {COUNTER_CROSS_RELAY, CLOCK_CROSS_RELAY, HALL_CROSS}
 };
 
 // DECLEARING FUNCTIONS
@@ -66,21 +66,22 @@ void setup() {
   Serial.begin(115200);
 
   // HALL INITIALIZATION
-  pinMode(hallDisk, INPUT);
-  pinMode(hallCross, INPUT);
+  pinMode(HALL_DISK, INPUT);
+  pinMode(HALL_CROSS, INPUT);
 
   // RELAY INITIALIZATION
-  int relays[] = {COUNTER_DISK_RELAY, CLOCK_DISK_RELAY, COUNTER_CROSS_RELAY, CLOCK_CROSS_RELAY, PADDLE_RELAY, -1};
-  for (int i = 0; relays[i] != -1; i++) {
-    pinMode(relays[i], OUTPUT);
-    digitalWrite(relays[i], HIGH);  // Set to off
+  for (int i = 0; i < 2; i++) {
+    pinMode(motorData[i].COUNTER_RELAY, OUTPUT);
+    pinMode(motorData[i].CLOCK_RELAY, OUTPUT);
+    digitalWrite(motorData[i].COUNTER_RELAY, HIGH);
+    digitalWrite(motorData[i].CLOCK_RELAY, HIGH);
   }
 
   // CALIBRATION
   // Disk calibration
-  //throwPaperPlasticCombo();
+  throwPaperPlastic();
   // Cross calibration
-  rotateMotor(1, 1, 1);
+  rotateMotor(1, 0, 1);
 }
 
 // LOOP
@@ -182,17 +183,12 @@ bool hallCheck(int hall) {
 // Turn off motor
 void turnMotorsOff(const int motorIndexes[]){
 	for (int i=0; motorIndexes[i] != -1; i++){
-    digitalWrite(motorData[i].COUNTER_RELAY, HIGH);
-    digitalWrite(motorData[i].CLOCK_RELAY, HIGH);
+    digitalWrite(motorData[motorIndexes[i]].COUNTER_RELAY, HIGH);
+    digitalWrite(motorData[motorIndexes[i]].CLOCK_RELAY, HIGH);
 	}
 }
 
 // Paddle movement
-void controlPaddleMotor(int motorController) {
-  digitalWrite(PADDLE_RELAY, motorController);
-}
-
-// Disk & cross rotation
 void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
   int motors[2] = {(int)motorIndex, -1};
   for (int i = 0; i < times; i++) {
@@ -216,7 +212,7 @@ void throwPaper(){
 }
 // Disk rotate 4 times clock wise
 void throwPaperPlastic() {
-  rotateMotor(0, 1, 4);
+  rotateMotor(0, 0, 4);
   memset(diskState, TRASH_NONE, 3 * sizeof(int));
   diskState[3] = EMPTY;
 }
