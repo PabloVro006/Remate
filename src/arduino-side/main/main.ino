@@ -193,7 +193,7 @@ void controlPaddleMotor(int motorController) {
 }
 
 // Disk & cross rotation
-void rotateMotor(const uint8_t motorIndex, const uint8_t rotationDirection, const uint8_t times) {
+void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
   int motors[2] = {(int)motorIndex, -1};
   for (int i = 0; i < times; i++) {
     digitalWrite(motorData[motorIndex].COUNTER_RELAY, !rotationDirection);
@@ -222,7 +222,7 @@ void throwPaperPlastic() {
 }
 
 // Generic function for throw both plastic & nr
-void normalThrow(const uint8_t motorIndex, const uint8_t diskSpace, const uint8_t order){
+void normalThrow(uint8_t motorIndex, uint8_t diskSpace, uint8_t order){
 	rotateMotor(motorIndex,order,1);
 	rotateMotor(motorIndex,!order,1);
 	diskState[diskSpace] = TRASH_NONE;

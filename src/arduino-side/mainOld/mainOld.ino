@@ -15,13 +15,13 @@ lcd.backlight();
 
 // RELAY SETUP
 // Disk relay
-#define COUNTER_DISK_RELAY 2
-#define CLOCK_DISK_RELAY 4
+int counterDiskRelay = 2;
+int clockDiskRelay = 4;
 // Cross relay
-#define COUNTER_CROSS_RELAY 8
-#define CLOCK_CROSS_RELAY 7
+int counterCrossRelay = 8;
+int clockCrossRelay = 7;
 // Paddle relay
-#define PADDLE_RELAY 12
+int paddleRelay = 12;
 
 // HALL SETUP
 // Setting pin
@@ -46,27 +46,6 @@ void normalThrow(int counterRelay, int clockRelay, int diskSpace, int order);  /
 void rotateList();                                                             // Make element in diskState rotate
 int getTrashFromPi();                                                          // Get serial input from Rpi4
 void sendFeedbackToPi(int feedbackNumber);                                     // Send the feedback to Rpi4
-
-// DEFINING MOTOR STRUCT
-// Struct itself
-typedef struct {
-  int COUNTER_RELAY;
-  int CLOCK_RELAY;
-  int HALL;
-} mstruct;
-// Creation of motors using the struct
-static const mstruct motorData[] = {
-	{
-		COUNTER_DISK_RELAY,
-		CLOCK_DISK_RELAY,
-		hallDisk,
-	},
-	{
-		COUNTER_CROSS_RELAY,
-		CLOCK_CROSS_RELAY,
-		hallCross,
-	}
-};
 
 // SETUP
 void setup() {
