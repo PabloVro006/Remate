@@ -189,6 +189,11 @@ void turnMotorsOff(const int motorIndexes[]){
 }
 
 // Paddle movement
+void controlPaddleMotor(int motorController) {
+  digitalWrite(PADDLE_RELAY, motorController);
+}
+
+// Paddle movement
 void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
   int motors[2] = {(int)motorIndex, -1};
   for (int i = 0; i < times; i++) {
@@ -206,13 +211,13 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
 // THROWING FUNCTION
 // Disk rotate 2 times counter wise then goes back
 void throwPaper(){
-	rotateMotor(0,0,2);
 	rotateMotor(0,1,2);
+	rotateMotor(0,0,2);
 	diskState[2] = diskState[1] = TRASH_NONE;
 }
 // Disk rotate 4 times clock wise
 void throwPaperPlastic() {
-  rotateMotor(0, 0, 4);
+  rotateMotor(0, 1, 4);
   memset(diskState, TRASH_NONE, 3 * sizeof(int));
   diskState[3] = EMPTY;
 }
@@ -239,11 +244,15 @@ int getTrashFromPi() {
     // Turn off paddle motor until the arduino read from serial
     //paddleMotorStopped = 1;
     // Get serial input
+    trashGet = Serial.parseInt();
+    /*
     String trashStr = Serial.readStringUntil('\n');
     trashGet = trashStr.toInt();
+    */
     if (trashGet < TRASH_NONE || trashGet > TRASH_NR) {
       trashGet = TRASH_NONE;  // Reset to default if invalid
     }
+    Serial.flush();
   }
   return trashGet;  // Return serial input
 }
