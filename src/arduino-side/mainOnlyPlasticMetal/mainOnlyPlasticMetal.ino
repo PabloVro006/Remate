@@ -16,9 +16,6 @@ enum TrashType {
 int HALL_DISK = A0;
 int HALL_CROSS = A1;
 
-// PADDLE SETUP
-int paddleMotorState = 1;
-
 // CONSTANTS
 const int serialDelay = 20;
 const int hallThresholdLow = 490;
@@ -30,6 +27,10 @@ const int feedbackOk = 42;
 const TrashType trashTypeMetal = TRASH_METAL;
 const TrashType trashTypePlastic = TRASH_PLASTIC;
 
+// Logic for the paddle motor going delay
+unsigned long previousMillis = 0;    // Stores the last time the action was taken
+const long interval = 400;           // Interval in milliseconds
+
 // TRASHING SETUP
 bool isRotating = false;
 int trash = TRASH_NONE;
@@ -40,16 +41,21 @@ typedef struct {
   int CLOCK_RELAY;
   int HALL;
 } MotorData;
-
 static const MotorData motorData[] = {
   {COUNTER_DISK_RELAY, CLOCK_DISK_RELAY, HALL_DISK},
   {COUNTER_CROSS_RELAY, CLOCK_CROSS_RELAY, HALL_CROSS}
 };
 
+typedef struct {
+  bool power;
+  bool going;
+} PaddleMotorStruct;
+PaddleMotorStruct paddleMotorStruct;
+
 // DECLEARING FUNCTIONS
 bool hallCheck(int hall);                                                                            // Check for disk or cross hall
 void turnMotorsOff(const int motorIndexes[]);                                                        // Turn off motor passed in the array
-void controlPaddleMotor(int motorController);                                                        // Control paddle motor
+void controlPaddleMotor(PaddleMotorStruct* motorController);                                         // Control paddle motor
 void rotateMotor(uint8_t motorIndex, uint8_t direction, uint8_t times);                              // Rotate cross or disk
 void throwTrash(TrashType trashType);                                                                // Throw trash
 int getTrashFromPi();                                                                                // Get serial input from Rpi4
@@ -67,39 +73,43 @@ void setup() {
   pinMode(HALL_CROSS, INPUT);
 
   // RELAY INITIALIZATION
+  pinMode(PADDLE_RELAY, OUTPUT);
   for (int i = 0; i < 2; i++) {
     pinMode(motorData[i].COUNTER_RELAY, OUTPUT);
     pinMode(motorData[i].CLOCK_RELAY, OUTPUT);
     digitalWrite(motorData[i].COUNTER_RELAY, HIGH);
     digitalWrite(motorData[i].CLOCK_RELAY, HIGH);
   }
+  paddleMotorStruct.power = 0;
+  paddleMotorStruct.going = 0;
 
   // CALIBRATION
-  rotateMotor(0, 1, 4); // Disk calibration
-  rotateMotor(1, 0, 1); // Cross calibration
+  //rotateMotor(0, 1, 4); // Disk calibration
+  //rotateMotor(1, 0, 1); // Cross calibration
 }
 
 // LOOP
 void loop() {
-  // Set paddle motor's state (off/on)
-  paddleMotorState = (trash == TRASH_NONE) ? 1 : 0;
+  // Get the current time
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    paddleMotorStruct.going = !paddleMotorStruct.going;
+  }
 
   // Get trash
   if(!isRotating){
     trash = getTrashFromPi();
-    if (trash != TRASH_NONE) {
-      controlPaddleMotor(0);
-      diskState[0] = trash;
-    } else {
-      controlPaddleMotor(paddleMotorState);
+    if(trash != TRASH_NONE){
+      paddleMotorStruct.power = 0;
+      controlPaddleMotor(&paddleMotorStruct);
+      isRotating = true;
+      trash == TRASH_METAL ? throwTrash(trashTypeMetal) : throwTrash(trashTypePlastic);
+      sendFeedbackToPi(feedbackOk);
+      paddleMotorStruct.power = 1;
     }
   }
-
-  if(trash != TRASH_NONE){
-    isRotating = true;
-    trash == TRASH_METAL ? throwTrash(trashTypeMetal) : throwTrash(trashTypePlastic);
-    sendFeedbackToPi(feedbackOk);
-  }
+  controlPaddleMotor(&paddleMotorStruct);
 }
 
 // DEFINE FUNCTIONS
@@ -118,8 +128,12 @@ void turnMotorsOff(const int motorIndexes[]){
 }
 
 // Paddle movement
-void controlPaddleMotor(int motorController) {
-  digitalWrite(PADDLE_RELAY, motorController);
+void controlPaddleMotor(PaddleMotorStruct* motorController) {
+  if(motorController->power && motorController->going) {
+    digitalWrite(PADDLE_RELAY, HIGH);
+  } else{
+    digitalWrite(PADDLE_RELAY, LOW);
+  }
 }
 
 // Generic function to move motors
@@ -140,9 +154,11 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
 // Throw function
 void throwTrash(TrashType trashType){
   uint8_t motorIndex = (trashType == TRASH_METAL) ? 0 : 1;
-  uint8_t order = (trashType == TRASH_METAL) ? 0 : 1;
-	rotateMotor(motorIndex,order,1);
-	rotateMotor(motorIndex,!order,1);
+  uint8_t order = (trashType == TRASH_METAL) ? 1 : 1;
+	//rotateMotor(motorIndex,order,1);
+	//rotateMotor(motorIndex,!order,1);
+  rotateMotor(motorIndex,0,1);
+	rotateMotor(motorIndex,1,1);
   trash = TRASH_NONE;
 }
 
@@ -153,7 +169,7 @@ int getTrashFromPi() {
   if (Serial.available() > 0) {
     // Get serial input
     trashGet = Serial.parseInt();
-    if (trashGet < TRASH_NONE || trashGet > TRASH_NR) {
+    if (trashGet < TRASH_NONE || trashGet > TRASH_PLASTIC) {
       trashGet = TRASH_NONE;  // Reset to default if invalid
     }
     Serial.flush();
