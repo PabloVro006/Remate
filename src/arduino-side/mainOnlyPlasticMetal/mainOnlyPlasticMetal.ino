@@ -181,7 +181,10 @@ int getTrashFromPi() {
 // Send the feedback to Rpi4
 void sendFeedbackToPi(int feedbackNumber){
   Serial.println(feedbackNumber);
-  delay(serialDelay);
   Serial.flush();
+  delay(serialDelay);
+  while (Serial.available() > 0) { // Clear any remaining data in the input buffer
+    Serial.read();
+  }
   isRotating = false;
 }
