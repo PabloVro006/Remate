@@ -11,7 +11,7 @@ classification_model = YOLO('classification.pt')
 streak = deque(maxlen=10)
 
 # URL of the MJPEG stream (you need to adjust this to your actual stream URL)
-url = 'http://192.168.1.79:8000/stream.mjpg'
+url = 'http://192.168.60.24:8000/stream.mjpg'
 
 # Open a connection to the MJPEG stream
 get_response = requests.get(url, stream=True)
@@ -27,65 +27,70 @@ if get_response.status_code == 200:
         start = byte_data.find(b'\xff\xd8')  # JPEG start
         end = byte_data.find(b'\xff\xd9')  # JPEG end
         
-        
         if start != -1 and end != -1:
             # Extract the JPEG frame
             jpg_frame = byte_data[start:end+2]
             byte_data = byte_data[end+2:]  # Remove the processed frame from buffer
 
             # Decode the JPEG frame to an image
-            array = np.frombuffer(jpg_frame, dtype=np.uint8)        
+            array = np.frombuffer(jpg_frame, dtype=np.uint8)
             image = cv2.imdecode(array, cv2.IMREAD_COLOR)
 
-            resized = cv2.resize(image, (224, 224))
-            prediction = classification_model.predict(resized)[0].probs.top1
+            #resized = cv2.resize(image, (224, 224))
 
-            if prediction == 0:
-                detection = detection_model(image)[0]
+            detection = detection_model(image)[0]
 
-                # PLOT
-                '''
-                for data in detection.boxes.data.tolist():
-                    if float(data[4]) < 0.70:
-                        continue
+            # PLOT
+            '''
+            for data in detection.boxes.data.tolist():
+                if float(data[4]) < 0.70:
+                    continue
 
-                    xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
-                    cv2.rectangle(image, (xmin, ymin) , (xmax, ymax), (0, 255, 0), 2)
+                xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
+                cv2.rectangle(image, (xmin, ymin) , (xmax, ymax), (0, 255, 0), 2)
+            
+            cv2.imshow("Image", image)
+
+            if cv2.waitKey(1) == ord("q"):
+                break
+            '''
+
+            biggest = 0
+            predicted_class = 0.0
+
+            for data in detection.boxes.data.tolist():
+                class_id = data[5]
+                xmin = int(data[0])
+                ymin = int(data[1])
+                xmax = int(data[2])
+                ymax = int(data[3])
+                area = (xmax - xmin) * (ymax - ymin)
+
+                if area > biggest:
+                    biggest = area
+                    predicted_class = class_id + 1
+                    best_box = {'xmin': xmin, 'ymin': ymin, 'xmax': xmax, 'ymax': ymax}
+
                 
-                cv2.imshow("Image", image)
+            streak.append(int(predicted_class))
+            print('pisello')
+            if predicted_class != 0.0 and len(streak) == 10 and all(streak[i] == streak[0] for i in range(len(streak))):
+                print('a')
+                detection_dict = {'class' : float(streak[0]),
+                'xmin': best_box['xmin'],
+                'ymin': best_box['ymin'],
+                'xmax': best_box['xmax'],
+                'ymax': best_box['ymax'] }
 
-                if cv2.waitKey(1) == ord("q"):
+                post_response = requests.post(url, data=detection_dict)
+                streak.clear()
+                
+                if post_response.status_code == 200:
+                    print('cacca2')
+                    continue
+                else:
+                    print(post_response.status_code)
                     break
-                '''
-
-                biggest = 0
-                predicted_class = 0.0
-
-                for data in detection.boxes.data.tolist():
-                    class_id = data[5]
-                    area = (int(data[2]) - int(data[0])) * (int(data[3]) - int(data[1]))
-
-                    if area > biggest: 
-                        biggest = area
-                        predicted_class = class_id + 1
-                    
-                streak.append(int(predicted_class))
-
-                if predicted_class != 0.0 and len(streak) == 10 and all(streak[i] == streak[0] for i in range(len(streak))):
-                    detection_list = [{'class' : float(streak[0])}]
-                    detection_json = json.dumps(detection_list)
-                    post_response = requests.post(url, json=detection_json)
-
-                    streak.clear()
-                    print('culetto')
-                    # while non arriva la response: sleep
-                    while not post_response.headers: 
-                        sleep(0.1)
-                        print('b')
-                    
-                    if post_response.status_code == 200:
-                        continue
-                    else: break
 
 
 else:

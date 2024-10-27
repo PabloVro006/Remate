@@ -21,7 +21,7 @@ class FrameBuffer(object):
             # New frame
             with self.condition:
                 # Write to buffer
-                self.buffer.seek(0)    
+                self.buffer.seek(0)
                 self.buffer.write(buf)
                 # Crop buffer to exact size
                 self.buffer.truncate()
@@ -34,9 +34,8 @@ class FrameBuffer(object):
 StreamingHandler extent http.server.SimpleHTTPRequestHandler class to handle mjpg file for live stream
 """
 class StreamingHandler(SimpleHTTPRequestHandler):
-    def __init__(self, frames_buffer, serial, *args):
+    def __init__(self, frames_buffer, *args):
         self.frames_buffer = frames_buffer
-        self.serial = serial
         super().__init__(*args)
 
     def do_GET(self):
@@ -47,7 +46,7 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.send_header('Pragma', 'no-cache')
             self.send_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
             self.end_headers()
-            try: 
+            try:
                 # Endless stream
                 while True:
                     with self.frames_buffer.condition:
@@ -69,69 +68,55 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             super().do_GET()
     
     def do_POST(self):
-        global class_predicted
+        global class_predicted, stop_condition
         # Finds length of client's data
         length = int(self.headers['Content-Length'])
         # Reads the data
-        field_data = self.rfile.read(length)
-        
-        # Extracts the class from the JSON sent by POST request
-        self.received = json.loads(field_data)
-        print('Dati ricevuti dal client: ', self.received)
-        data = self.received[11:14]
-        # data = self.received.get('predicted_class', '0.0')
+        field_data = self.rfile.read(length).decode('utf-8')
+        data = [int(float(i.split('=')[1])) for i in field_data.split('&')]
+
+        print('Dati ricevuti dal client: ', data)
         
         # Saves the predicted class
-        if data != '0.0':
-            class_predicted = int(float(data))
-            print('CLASS PREDICTED: ' + str(class_predicted))
-            self.serial.write((str(class_predicted) + '\n').encode())
+        if data[0] != '0.0':
+            class_predicted = int(float(data[0]))
 
-            # this clears the buffer (?)
-            # read_value = self.serial.read(self.serial.in_waiting).decode('ascii')
-            while True:
-                print('ENTERED WHILE TRUE')
-                if self.serial.in_waiting > 0:
-                    print('ENTERED CONDITION')
-                    received_data = self.serial.readline().decode('utf-8').strip()
-                    print(f"Received: {received_data}")
-                    if received_data == "42": break
-
-                '''
-                if self.serial.in_waiting > 0:
-                    print('ENTERED CONDITION')
-                    read_value = self.serial.read(self.serial.in_waiting).decode('ascii')
-                if read_value == "42": break
-                '''
-
+        # Responds
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
-        response = {'status': 'success'}
+        response = {'status': 'success', 'stop' : stop_condition}
         self.wfile.write(json.dumps(response).encode('utf-8'))
-        
 
-    
-
-''' 
+'''
 ThreadingServer extents ThreadingHTTPServer in order to manage the class prediction sent by the client
 '''
 class ThreadingServer(ThreadingHTTPServer):
-    def __init__(self, *args):
+    def __init__(self, serial, *args):
+        self.serial = serial
         super().__init__(*args)
 
     def serve_forever(self):
-        global class_predicted
+        global class_predicted, stop_condition
+        class_predicted = 0
         while True:
             self.handle_request()
-            print('class' + str(class_predicted))
-                
-                
-
+            sleep(0.01)
+            if stop_condition == 0 and class_predicted != 0:
+                self.serial.write((str(class_predicted) + '\n').encode())
+                print('DATA SENT')
+                stop_condition = 1
+            sleep(0.01)
+            if self.serial.in_waiting > 0:
+                print("ENTERED CONDITION")
+                received_data = self.serial.readline().decode('utf-8').strip()
+                print(f"Received: {received_data}")
+                if received_data == "42":
+                    stop_condition = 0
 def stream():
-    global class_predicted
-    class_predicted = 0
-    ser = serial.Serial('/dev/ttyACM1', 115200, timeout=1.0)
+    global class_predicted, stop_condition
+    stop_condition = 0
+    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1.0) # controlla il timeout
     sleep(2)
     ser.reset_input_buffer()
     
@@ -146,9 +131,9 @@ def stream():
             # Run server
             try:
                 address = ('', 8000)
-                handler = lambda *args: StreamingHandler(frame_buffer, ser, *args)
+                handler = lambda *args: StreamingHandler(frame_buffer, *args)
 
-                server = ThreadingServer(address, handler)
+                server = ThreadingServer(ser, address, handler)
                 server.serve_forever()
                 
             finally:
