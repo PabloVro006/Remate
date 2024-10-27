@@ -1,8 +1,8 @@
 // RELAY SETUP
-#define COUNTER_DISK_RELAY 2
-#define CLOCK_DISK_RELAY 4
-#define COUNTER_CROSS_RELAY 8
+#define CLOCK_DISK_RELAY 2
+#define COUNTER_DISK_RELAY 4
 #define CLOCK_CROSS_RELAY 7
+#define COUNTER_CROSS_RELAY 8
 #define PADDLE_RELAY 12
 
 // ENUM FOR TRASH TYPES
@@ -18,9 +18,9 @@ int HALL_CROSS = A1;
 
 // CONSTANTS
 const int serialDelay = 20;
-const int hallThresholdLow = 490;
+const int hallThresholdLow = 470;
 const int hallThresholdHigh = 550;
-const int rotationDelayMs = 900;
+const int rotationDelayMs = 1000;
 const int feedbackOk = 42;
 
 // Assign variables to represent specific trash types
@@ -29,7 +29,8 @@ const TrashType trashTypePlastic = TRASH_PLASTIC;
 
 // Logic for the paddle motor going delay
 unsigned long previousMillis = 0;    // Stores the last time the action was taken
-const long interval = 400;           // Interval in milliseconds
+const long paddleGoingInterval = 200;
+const long paddleNotGoingInterval = 600;
 
 // TRASHING SETUP
 bool isRotating = false;
@@ -80,19 +81,20 @@ void setup() {
     digitalWrite(motorData[i].COUNTER_RELAY, HIGH);
     digitalWrite(motorData[i].CLOCK_RELAY, HIGH);
   }
-  paddleMotorStruct.power = 0;
-  paddleMotorStruct.going = 0;
+  paddleMotorStruct.power = 1;
+  paddleMotorStruct.going = 1;
 
   // CALIBRATION
   //rotateMotor(0, 1, 4); // Disk calibration
-  //rotateMotor(1, 0, 1); // Cross calibration
+  rotateMotor(1, 0, 1); // Cross calibration
 }
 
 // LOOP
 void loop() {
-  // Get the current time
+  // Get current time
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
+  unsigned long intervalToConsider = paddleMotorStruct.going ? paddleGoingInterval : paddleNotGoingInterval;
+  if (currentMillis - previousMillis >= intervalToConsider) {
     previousMillis = currentMillis;
     paddleMotorStruct.going = !paddleMotorStruct.going;
   }
@@ -115,6 +117,7 @@ void loop() {
 // DEFINE FUNCTIONS
 // Hall reading function
 bool hallCheck(int hall) {
+  delay(serialDelay);
   int reading = analogRead(hall);
   return (reading > hallThresholdLow && reading < hallThresholdHigh);
 }
@@ -131,7 +134,7 @@ void turnMotorsOff(const int motorIndexes[]){
 void controlPaddleMotor(PaddleMotorStruct* motorController) {
   if(motorController->power && motorController->going) {
     digitalWrite(PADDLE_RELAY, HIGH);
-  } else{
+  }else{
     digitalWrite(PADDLE_RELAY, LOW);
   }
 }
@@ -140,12 +143,12 @@ void controlPaddleMotor(PaddleMotorStruct* motorController) {
 void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
   int motors[2] = {(int)motorIndex, -1};
   for (int i = 0; i < times; i++) {
-    digitalWrite(motorData[motorIndex].COUNTER_RELAY, !rotationDirection);
-    digitalWrite(motorData[motorIndex].CLOCK_RELAY, rotationDirection);
+    digitalWrite(motorData[motorIndex].COUNTER_RELAY, rotationDirection);
+    digitalWrite(motorData[motorIndex].CLOCK_RELAY, !rotationDirection);
     delay(rotationDelayMs);
     while (hallCheck(motorData[motorIndex].HALL)) {
-      digitalWrite(motorData[motorIndex].COUNTER_RELAY, !rotationDirection);
-      digitalWrite(motorData[motorIndex].CLOCK_RELAY, rotationDirection);
+      digitalWrite(motorData[motorIndex].COUNTER_RELAY, rotationDirection);
+      digitalWrite(motorData[motorIndex].CLOCK_RELAY, !rotationDirection);
     }
     turnMotorsOff(motors);
   }
@@ -154,9 +157,7 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
 // Throw function
 void throwTrash(TrashType trashType){
   uint8_t motorIndex = (trashType == TRASH_METAL) ? 0 : 1;
-  uint8_t order = (trashType == TRASH_METAL) ? 1 : 1;
-	//rotateMotor(motorIndex,order,1);
-	//rotateMotor(motorIndex,!order,1);
+  //uint8_t order = (trashType == TRASH_METAL) ? 1 : 0; // 0 for counterclockwise, 1 for clockwise
   rotateMotor(motorIndex,0,1);
 	rotateMotor(motorIndex,1,1);
   trash = TRASH_NONE;
@@ -164,7 +165,7 @@ void throwTrash(TrashType trashType){
 
 // RPI4 COMMUNICATION
 // Get trash from Rpi4
-int getTrashFromPi() {
+int getTrashFromPi() {  
   int trashGet = TRASH_NONE;
   if (Serial.available() > 0) {
     // Get serial input
