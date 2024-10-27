@@ -109,6 +109,7 @@ void loop() {
       trash == TRASH_METAL ? throwTrash(trashTypeMetal) : throwTrash(trashTypePlastic);
       sendFeedbackToPi(feedbackOk);
       paddleMotorStruct.power = 1;
+      paddleMotorStruct.going = 0;
     }
   }
   controlPaddleMotor(&paddleMotorStruct);
