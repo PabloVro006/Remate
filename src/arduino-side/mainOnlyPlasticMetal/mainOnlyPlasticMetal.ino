@@ -18,7 +18,7 @@ int HALL_CROSS = A1;
 
 // CONSTANTS
 const int serialDelay = 20;
-const int hallThresholdLow = 470;
+const int hallThresholdLow = 400;
 const int hallThresholdHigh = 550;
 const int rotationDelayMs = 1000;
 const int feedbackOk = 42;
