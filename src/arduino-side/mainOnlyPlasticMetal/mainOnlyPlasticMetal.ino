@@ -160,7 +160,13 @@ void throwTrash(TrashType trashType){
   uint8_t motorIndex = (trashType == TRASH_METAL) ? 0 : 1;
   //uint8_t order = (trashType == TRASH_METAL) ? 1 : 0; // 0 for counterclockwise, 1 for clockwise
   rotateMotor(motorIndex,0,1);
-	rotateMotor(motorIndex,1,1);
+  rotateMotor(motorIndex,1,1);
+
+  /*
+  // CONTROLLA QUESTA RIGA
+  trashType == TRASH_METAL ? rotateMotor(motorIndex,1,1) : pass;
+  */
+
   trash = TRASH_NONE;
 }
 
