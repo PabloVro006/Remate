@@ -13,8 +13,8 @@ enum TrashType {
 };
 
 // HALL SETUP
-int HALL_DISK = A0;
-int HALL_CROSS = A1;
+const int HALL_DISK = A0;
+const int HALL_CROSS = A1;
 
 // CONSTANTS
 const int serialDelay = 20;
