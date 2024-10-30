@@ -158,9 +158,11 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
 // Throw function
 void throwTrash(TrashType trashType){
   uint8_t motorIndex = (trashType == TRASH_METAL) ? 0 : 1;
-  //uint8_t order = (trashType == TRASH_METAL) ? 1 : 0; // 0 for counterclockwise, 1 for clockwise
-  rotateMotor(motorIndex,0,1);
-	rotateMotor(motorIndex,1,1);
+  uint8_t order = (trashType == TRASH_METAL) ? 1 : 0; // 0 for clockwise, 1 for counterclockwise
+  rotateMotor(motorIndex,order,1);
+  if(trashType == TRASH_METAL){
+    rotateMotor(motorIndex,!order,1);
+  }
   trash = TRASH_NONE;
 }
 
