@@ -1,4 +1,4 @@
-// RELAY SETUP
+// MOTOR SETUP
 #define CLOCK_DISK_RELAY 2
 #define COUNTER_DISK_RELAY 4
 #define CLOCK_CROSS_RELAY 7
@@ -109,10 +109,9 @@ void loop() {
       controlPaddleMotor(&paddleMotorStruct);
       if(trash == TRASH_INCOMING){
         unsigned long startMillis = millis();
-        while(trash != TRASH_INCOMING || trash != TRASH_NONE){
+        while(trash == TRASH_INCOMING || trash == TRASH_NONE){
           unsigned long currentMillisForTrashIncoming = millis();
           trash = getTrashFromPi();
-          delay(serialDelay);
           if(currentMillisForTrashIncoming - startMillis >= trashIncomingTimeout ){
             trash = TRASH_NONE;
             paddleMotorStruct.power = 1;
@@ -123,7 +122,7 @@ void loop() {
       isThrowing = true;
       trash == TRASH_METAL ? throwTrash(trashTypeMetal) : throwTrash(trashTypePlastic);
       sendFeedbackToPi(feedbackOk);
-      paddleMotorStruct.power = 1;
+      paddleMotorStruct.power =  1;
       paddleMotorStruct.going = 0;
     }
   }

@@ -1,4 +1,4 @@
-// RELAY SETUP
+// TRANSISTOR SETUP
 #define CLOCK_DISK_NPN 2
 #define COUNTER_DISK_PNP 3
 #define COUNTER_DISK_NPN 4
@@ -29,16 +29,14 @@ const int hallThresholdLow = 400;
 const int hallThresholdHigh = 550;
 const int rotationDelayMs = 1000;
 const int feedbackOk = 42;
-
 // Assign variables to represent specific trash types
 const TrashType trashTypeMetal = TRASH_METAL;
 const TrashType trashTypePlastic = TRASH_PLASTIC;
-
 // Logic for the paddle motor going delay
-unsigned long previousMillis = 0;    // Stores the last time the action was taken
 const long paddleGoingInterval = 200;
 const long paddleNotGoingInterval = 600;
 const long trashIncomingTimeout = 5000;
+unsigned long previousMillis = 0;    // Stores the last time the action was taken
 
 // TRASHING SETUP
 bool isThrowing = false;
@@ -83,7 +81,7 @@ void setup() {
   pinMode(HALL_DISK, INPUT);
   pinMode(HALL_CROSS, INPUT);
 
-  // RELAY INITIALIZATION
+  // TRANSISTOR INITIALIZATION
   pinMode(PADDLE_RELAY, OUTPUT);
   for (int i = 0; i < 2; i++) {
     pinMode(motorData[i].CLOCK_NPN, OUTPUT);
@@ -107,8 +105,8 @@ void setup() {
 void loop() {
   // Get current time
   unsigned long currentMillis = millis();
-  unsigned long intervalToConsider = paddleMotorStruct.going ? paddleGoingInterval : paddleNotGoingInterval;
-  if (currentMillis - previousMillis >= intervalToConsider) {
+  //unsigned long intervalToConsider = paddleMotorStruct.going ? paddleGoingInterval : paddleNotGoingInterval;
+  if (currentMillis - previousMillis >= (paddleMotorStruct.going ? paddleGoingInterval : paddleNotGoingInterval)) {
     previousMillis = currentMillis;
     paddleMotorStruct.going = !paddleMotorStruct.going;
   }
@@ -121,11 +119,11 @@ void loop() {
       controlPaddleMotor(&paddleMotorStruct);
       if(trash == TRASH_INCOMING){
         unsigned long startMillis = millis();
-        while(trash != TRASH_INCOMING || trash != TRASH_NONE){
+        while(trash == TRASH_INCOMING || trash == TRASH_NONE){
           unsigned long currentMillisForTrashIncoming = millis();
           trash = getTrashFromPi();
           delay(serialDelay);
-          if(currentMillisForTrashIncoming - startMillis >= trashIncomingTimeout ){
+          if(currentMillisForTrashIncoming - startMillis >= trashIncomingTimeout){
             trash = TRASH_NONE;
             paddleMotorStruct.power = 1;
             return; // Restarts the loop()
@@ -153,10 +151,11 @@ bool hallCheck(int hall) {
 // Turn off motors
 void turnMotorsOff(const int motorIndexes[]){
 	for (int i=0; motorIndexes[i] != -1; i++){
-    digitalWrite(motorData[motorIndexes[i]].CLOCK_NPN, LOW);
-    digitalWrite(motorData[motorIndexes[i]].CLOCK_PNP, LOW);
-    digitalWrite(motorData[motorIndexes[i]].COUNTER_NPN, LOW);
-    digitalWrite(motorData[motorIndexes[i]].COUNTER_PNP, LOW);
+    const MotorData& motor = motorData[motorIndexes[i]];
+    digitalWrite(motor.CLOCK_NPN, LOW);
+    digitalWrite(motor.CLOCK_PNP, LOW);
+    digitalWrite(motor.COUNTER_NPN, LOW);
+    digitalWrite(motor.COUNTER_PNP, LOW);
 	}
 }
 
