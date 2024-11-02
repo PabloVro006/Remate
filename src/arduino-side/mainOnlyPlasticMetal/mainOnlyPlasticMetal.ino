@@ -10,6 +10,7 @@ enum TrashType {
   TRASH_NONE = 0,
   TRASH_METAL = 1,
   TRASH_PLASTIC = 2,
+  TRASH_INCOMING = 9,
 };
 
 // HALL SETUP
@@ -31,9 +32,10 @@ const TrashType trashTypePlastic = TRASH_PLASTIC;
 unsigned long previousMillis = 0;    // Stores the last time the action was taken
 const long paddleGoingInterval = 200;
 const long paddleNotGoingInterval = 600;
+const long trashIncomingTimeout = 5000;
 
 // TRASHING SETUP
-bool isRotating = false;
+bool isThrowing = false;
 int trash = TRASH_NONE;
 
 // MOTOR STRUCT
@@ -100,12 +102,25 @@ void loop() {
   }
 
   // Get trash
-  if(!isRotating){
+  if(!isThrowing){
     trash = getTrashFromPi();
     if(trash != TRASH_NONE){
       paddleMotorStruct.power = 0;
       controlPaddleMotor(&paddleMotorStruct);
-      isRotating = true;
+      if(trash == TRASH_INCOMING){
+        unsigned long startMillis = millis();
+        while(trash != TRASH_INCOMING || trash != TRASH_NONE){
+          unsigned long currentMillisForTrashIncoming = millis();
+          trash = getTrashFromPi();
+          delay(serialDelay);
+          if(currentMillisForTrashIncoming - startMillis >= trashIncomingTimeout ){
+            trash = TRASH_NONE;
+            paddleMotorStruct.power = 1;
+            return; // Restarts the loop()
+          }
+        };
+      }
+      isThrowing = true;
       trash == TRASH_METAL ? throwTrash(trashTypeMetal) : throwTrash(trashTypePlastic);
       sendFeedbackToPi(feedbackOk);
       paddleMotorStruct.power = 1;
@@ -168,15 +183,15 @@ void throwTrash(TrashType trashType){
 
 // RPI4 COMMUNICATION
 // Get trash from Rpi4
-int getTrashFromPi() {  
+int getTrashFromPi() {
+  Serial.flush();
   int trashGet = TRASH_NONE;
   if (Serial.available() > 0) {
     // Get serial input
     trashGet = Serial.parseInt();
-    if (trashGet < TRASH_NONE || trashGet > TRASH_PLASTIC) {
+    if ((trashGet < TRASH_NONE || trashGet > TRASH_PLASTIC) && trashGet != TRASH_INCOMING) {
       trashGet = TRASH_NONE;  // Reset to default if invalid
     }
-    Serial.flush();
   }
   return trashGet;  // Return serial input
 }
@@ -188,5 +203,5 @@ void sendFeedbackToPi(int feedbackNumber){
   while (Serial.available() > 0) { // Clear any remaining data in the input buffer
     Serial.read();
   }
-  isRotating = false;
+  isThrowing = false;
 }

@@ -9,6 +9,8 @@
 #define COUNTER_CROSS_NPN 8
 #define CLOCK_CROSS_PNP 9
 
+#define PADDLE_RELAY 12
+
 // ENUM FOR TRASH TYPES
 enum TrashType {
   TRASH_NONE = 0,
@@ -37,7 +39,7 @@ const long paddleGoingInterval = 200;
 const long paddleNotGoingInterval = 600;
 
 // TRASHING SETUP
-bool isRotating = false;
+bool isThrowing = false;
 int trash = TRASH_NONE;
 
 // MOTOR STRUCT
@@ -50,7 +52,7 @@ typedef struct {
 } MotorData;
 static const MotorData motorData[] = {
   {CLOCK_DISK_NPN, CLOCK_DISK_PNP, COUNTER_DISK_NPN, COUNTER_DISK_PNP, HALL_DISK},
-  {CLOCK_CROSS_NPN, CLOCK_CROSS_PNP, COUNTER_CROSS_NPN, COUNTER_CROSS_PNP, HALL_CROSSwh}
+  {CLOCK_CROSS_NPN, CLOCK_CROSS_PNP, COUNTER_CROSS_NPN, COUNTER_CROSS_PNP, HALL_CROSS}
 };
 
 typedef struct {
@@ -110,12 +112,12 @@ void loop() {
   }
 
   // Get trash
-  if(!isRotating){
+  if(!isThrowing){
     trash = getTrashFromPi();
     if(trash != TRASH_NONE){
       paddleMotorStruct.power = 0;
       controlPaddleMotor(&paddleMotorStruct);
-      isRotating = true;
+      isThrowing = true;
       trash == TRASH_METAL ? throwTrash(trashTypeMetal) : throwTrash(trashTypePlastic);
       sendFeedbackToPi(feedbackOk);
       paddleMotorStruct.power = 1;
@@ -200,5 +202,5 @@ void sendFeedbackToPi(int feedbackNumber){
   while (Serial.available() > 0) { // Clear any remaining data in the input buffer
     Serial.read();
   }
-  isRotating = false;
+  isThrowing = false;
 }
