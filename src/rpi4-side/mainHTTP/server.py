@@ -68,13 +68,13 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             super().do_GET()
     
     def do_POST(self):
-        global class_predicted, stop_condition
+        global class_predicted, stop_condition, fast_stop
         # Finds length of client's data
         length = int(self.headers['Content-Length'])
         # Reads the data
         field_data = self.rfile.read(length).decode('utf-8')
         data = [int(float(i.split('=')[1])) for i in field_data.split('&')]
-
+        fast_stop = int(data[5])
         print('Dati ricevuti dal client: ', data)
         
         # Saves the predicted class
@@ -97,15 +97,23 @@ class ThreadingServer(ThreadingHTTPServer):
         super().__init__(*args)
 
     def serve_forever(self):
-        global class_predicted, stop_condition
+        global class_predicted, stop_condition, fast_stop
         class_predicted = 0
+        fast_stop = 0
         while True:
             self.handle_request()
+            
             sleep(0.01)
-            if stop_condition == 0 and class_predicted != 0:
-                self.serial.write((str(class_predicted) + '\n').encode())
-                print('DATA SENT')
-                stop_condition = 1
+            if fast_stop == 1:
+                self.serial.write(('9\n').encode())
+                print('PADDLE BLOCKED')
+            
+            else:
+                if stop_condition == 0 and class_predicted != 0:
+                    self.serial.write((str(class_predicted) + '\n').encode())
+                    print('DATA SENT')
+                    stop_condition = 1
+            
             sleep(0.01)
             if self.serial.in_waiting > 0:
                 print("ENTERED CONDITION")
@@ -116,7 +124,7 @@ class ThreadingServer(ThreadingHTTPServer):
 def stream():
     global class_predicted, stop_condition
     stop_condition = 0
-    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1.0) # controlla il timeout
+    ser = serial.Serial('/dev/ttyACM1', 115200, timeout=1.0) # controlla il timeout
     sleep(2)
     ser.reset_input_buffer()
     

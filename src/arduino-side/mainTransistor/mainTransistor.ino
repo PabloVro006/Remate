@@ -9,7 +9,7 @@
 #define COUNTER_CROSS_NPN 8
 #define CLOCK_CROSS_PNP 9
 
-#define PADDLE_RELAY 12
+#define PADDLE_NPN 12
 
 // ENUM FOR TRASH TYPES
 enum TrashType {
@@ -54,7 +54,7 @@ static const MotorData motorData[] = {
   {CLOCK_DISK_NPN, CLOCK_DISK_PNP, COUNTER_DISK_NPN, COUNTER_DISK_PNP, HALL_DISK},
   {CLOCK_CROSS_NPN, CLOCK_CROSS_PNP, COUNTER_CROSS_NPN, COUNTER_CROSS_PNP, HALL_CROSS}
 };
-
+// Struct for the paddle's motor
 typedef struct {
   bool power;
   bool going;
@@ -82,7 +82,7 @@ void setup() {
   pinMode(HALL_CROSS, INPUT);
 
   // TRANSISTOR INITIALIZATION
-  pinMode(PADDLE_RELAY, OUTPUT);
+  pinMode(PADDLE_NPN, OUTPUT);
   for (int i = 0; i < 2; i++) {
     pinMode(motorData[i].CLOCK_NPN, OUTPUT);
     pinMode(motorData[i].CLOCK_PNP, OUTPUT);
@@ -162,9 +162,9 @@ void turnMotorsOff(const int motorIndexes[]){
 // Paddle movement
 void controlPaddleMotor(PaddleMotorStruct* motorController) {
   if(motorController->power && motorController->going) {
-    digitalWrite(PADDLE_RELAY, HIGH);
+    digitalWrite(PADDLE_NPN, HIGH);
   }else{
-    digitalWrite(PADDLE_RELAY, LOW);
+    digitalWrite(PADDLE_NPN, LOW);
   }
 }
 
