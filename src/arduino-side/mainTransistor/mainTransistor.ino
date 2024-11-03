@@ -1,14 +1,15 @@
 // TRANSISTOR SETUP
-#define CLOCK_DISK_NPN 2
+// Setup for the disk's motor
+#define CLOCK_DISK_PNP 2
 #define COUNTER_DISK_PNP 3
-#define COUNTER_DISK_NPN 4
-#define CLOCK_DISK_PNP 5
-
-#define CLOCK_CROSS_NPN 6
+#define CLOCK_DISK_NPN 4
+#define COUNTER_DISK_NPN 5
+// Setup for the cross's motor
+#define CLOCK_CROSS_PNP 6
 #define COUNTER_CROSS_PNP 7
-#define COUNTER_CROSS_NPN 8
-#define CLOCK_CROSS_PNP 9
-
+#define CLOCK_CROSS_NPN 8
+#define COUNTER_CROSS_NPN 9
+// Setup for the paddle motor
 #define PADDLE_NPN 12
 
 // ENUM FOR TRASH TYPES
@@ -25,24 +26,25 @@ const int HALL_CROSS = A1;
 
 // CONSTANTS
 const int serialDelay = 20;
-const int hallThresholdLow = 400;
-const int hallThresholdHigh = 550;
-const int rotationDelayMs = 1000;
-const int feedbackOk = 42;
+const int hallThresholdLow = 400;  // If hall's value < than this, there is a magnet 
+const int hallThresholdHigh = 550; // If hall's value > thas this, there is amagnet
+const int rotationDelayMs = 1000;  // Millis for making sure that the magnet has moved away from the hall
+const int feedbackOk = 42;         // Number to send at the Rpi4 when throwing is over
 // Assign variables to represent specific trash types
 const TrashType trashTypeMetal = TRASH_METAL;
 const TrashType trashTypePlastic = TRASH_PLASTIC;
 // Logic for the paddle motor going delay
-const long paddleGoingInterval = 200;
-const long paddleNotGoingInterval = 600;
-const long trashIncomingTimeout = 5000;
-unsigned long previousMillis = 0;    // Stores the last time the action was taken
+const long paddleGoingInterval = 200;    // Millis indicating the time of paddle's going
+const long paddleNotGoingInterval = 600; // Millis indicating the time od paddle's stopping
+const long trashIncomingTimeout = 5000;  // Millis for exiting the 9 condition if nothing is received
+unsigned long previousMillis = 0;        // Stores the last time the switch of the paddle's going was changed
 
 // TRASHING SETUP
-bool isThrowing = false;
-int trash = TRASH_NONE;
+bool isThrowing = false;  // When this is false the arduino read from Serial
+int trash = TRASH_NONE;   // Trash initialized ad null
 
 // MOTOR STRUCT
+// Struct for the disk's and the cross's motor
 typedef struct {
   int CLOCK_NPN;
   int CLOCK_PNP;
@@ -50,25 +52,26 @@ typedef struct {
   int COUNTER_PNP;
   int HALL;
 } MotorData;
-static const MotorData motorData[] = {
+// Array that assigns transistor pins and Hall sensor pins to each motor (disk and cross)
+static const MotorData motorData[2] = {
   {CLOCK_DISK_NPN, CLOCK_DISK_PNP, COUNTER_DISK_NPN, COUNTER_DISK_PNP, HALL_DISK},
   {CLOCK_CROSS_NPN, CLOCK_CROSS_PNP, COUNTER_CROSS_NPN, COUNTER_CROSS_PNP, HALL_CROSS}
 };
 // Struct for the paddle's motor
 typedef struct {
-  bool power;
-  bool going;
+  bool power;  // Indicates if the paddle should be moving (true) or not (false)
+  bool going;  // Indicates if the paddle is currently in the "going" or "not going" position when power is true
 } PaddleMotorStruct;
-PaddleMotorStruct paddleMotorStruct;
+PaddleMotorStruct paddleMotorStruct; // Instance of PaddleMotorStruct to control the paddle motor
 
 // DECLEARING FUNCTIONS
-bool hallCheck(int hall);                                                                            // Check for disk or cross hall
-void turnMotorsOff(const int motorIndexes[]);                                                        // Turn off motor passed in the array
-void controlPaddleMotor(PaddleMotorStruct* motorController);                                         // Control paddle motor
-void rotateMotor(uint8_t motorIndex, uint8_t direction, uint8_t times);                              // Rotate cross or disk
-void throwTrash(TrashType trashType);                                                                // Throw trash
-int getTrashFromPi();                                                                                // Get serial input from Rpi4
-void sendFeedbackToPi(int feedbackNumber);                                                           // Send the feedback to Rpi4
+bool hallCheck(int hall);                                                // Check for disk's or cross's hall state
+void turnMotorsOff(const int motorIndexes[]);                            // Turn off motor passed in the array
+void controlPaddleMotor(PaddleMotorStruct* motorController);             // Control paddle motor
+void rotateMotor(uint8_t motorIndex, uint8_t direction, uint8_t times);  // Rotate cross's or disk's motor
+void throwTrash(TrashType trashType);                                    // Throw trash
+int getTrashFromPi();                                                    // Get the Serial input from Rpi4
+void sendFeedbackToPi(int feedbackNumber);                               // Send the Serial feedback to Rpi4
 
 // SETUP
 void setup() {
@@ -78,21 +81,26 @@ void setup() {
   delay(serialDelay);
 
   // HALL INITIALIZATION
+  // Setting this to input for reading the hall's output
   pinMode(HALL_DISK, INPUT);
   pinMode(HALL_CROSS, INPUT);
 
   // TRANSISTOR INITIALIZATION
   pinMode(PADDLE_NPN, OUTPUT);
+  // Setting the disk's and cross's transistors
   for (int i = 0; i < 2; i++) {
+    // Set the transistors pin to output
     pinMode(motorData[i].CLOCK_NPN, OUTPUT);
     pinMode(motorData[i].CLOCK_PNP, OUTPUT);
     pinMode(motorData[i].COUNTER_NPN, OUTPUT);
     pinMode(motorData[i].COUNTER_PNP, OUTPUT);
+    // Turning off the transistors
     digitalWrite(motorData[i].CLOCK_NPN, LOW);
     digitalWrite(motorData[i].CLOCK_PNP, LOW);
     digitalWrite(motorData[i].COUNTER_NPN, LOW);
     digitalWrite(motorData[i].COUNTER_PNP, LOW);
   }
+  // Make the paddle move
   paddleMotorStruct.power = 1;
   paddleMotorStruct.going = 1;
 
