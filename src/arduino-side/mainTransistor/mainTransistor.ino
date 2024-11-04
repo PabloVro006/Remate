@@ -35,7 +35,7 @@ const TrashType trashTypeMetal = TRASH_METAL;
 const TrashType trashTypePlastic = TRASH_PLASTIC;
 // Logic for the paddle motor going delay
 const long paddleGoingInterval = 200;    // Millis indicating the time of paddle's going
-const long paddleNotGoingInterval = 600; // Millis indicating the time od paddle's stopping
+const long paddleNotGoingInterval = 650; // Millis indicating the time of paddle's stopping
 const long trashIncomingTimeout = 5000;  // Millis for exiting the 9 condition if nothing is received
 unsigned long previousMillis = 0;        // Stores the last time the switch of the paddle's going was changed
 
