@@ -31,7 +31,7 @@ const TrashType trashTypePlastic = TRASH_PLASTIC;
 // Logic for the paddle motor going delay
 unsigned long previousMillis = 0;    // Stores the last time the action was taken
 const long paddleGoingInterval = 200;
-const long paddleNotGoingInterval = 600;
+const long paddleNotGoingInterval = 675;
 const long trashIncomingTimeout = 5000;
 
 // TRASHING SETUP
