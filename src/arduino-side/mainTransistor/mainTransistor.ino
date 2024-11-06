@@ -1,3 +1,6 @@
+// INCLUDING LIBRARIES
+#include <IRremote.h>
+
 // TRANSISTOR SETUP
 // Setup for the disk's motor
 #define CLOCK_DISK_PNP 2
