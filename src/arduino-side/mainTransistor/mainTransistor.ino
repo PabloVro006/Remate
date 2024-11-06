@@ -1,18 +1,15 @@
-// INCLUDING LIBRARIES
-#include <IRremote.h>
-
-// TRANSISTOR SETUP
-// Setup for the disk's motor
+// TRANSISTOR DEFINITION
+// Definition for the disk's motor
 #define CLOCK_DISK_PNP 2
 #define COUNTER_DISK_PNP 3
 #define CLOCK_DISK_NPN 4
 #define COUNTER_DISK_NPN 5
-// Setup for the cross's motor
+// Definition for the cross's motor
 #define CLOCK_CROSS_PNP 6
 #define COUNTER_CROSS_PNP 7
 #define CLOCK_CROSS_NPN 8
 #define COUNTER_CROSS_NPN 9
-// Setup for the paddle motor
+// Definition for the paddle motor
 #define PADDLE_NPN 12
 
 // ENUM FOR TRASH TYPES
@@ -23,7 +20,7 @@ enum TrashType {
   TRASH_INCOMING = 9,  // 9 is a flag indicating that something has been detected form the Rpi4, but it's not defined yet
 };
 
-// HALL SETUP
+// HALL DEFINITION
 const int HALL_DISK = A0;
 const int HALL_CROSS = A1;
 
