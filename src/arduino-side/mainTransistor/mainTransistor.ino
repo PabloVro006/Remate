@@ -37,22 +37,18 @@ const int HALL_CROSS = A1;
 const int serialDelay = 20;
 const int hallThresholdLow = 400;  // If hall's value < than this, there is a magnet 
 const int hallThresholdHigh = 550; // If hall's value > thas this, there is amagnet
-const int rotationDelay = 1000;  // Millis for making sure that the magnet has moved away from the hall
+const int rotationDelay = 1000;    // Millis for making sure that the magnet has moved away from the hall
 const int feedbackOk = 42;         // Number to send at the Rpi4 when throwing is over
-// Assign variables to represent specific trash types
-const TrashType trashTypeMetal = TRASH_METAL;
-const TrashType trashTypePlastic = TRASH_PLASTIC;
-const TrashType trashTypePaper = TRASH_PAPER;
 // Logic for the paddle motor going delay
 const long paddleGoingInterval = 200;    // Millis indicating the time of paddle's going
 const long paddleNotGoingInterval = 675; // Millis indicating the time of paddle's stopping
 const long trashIncomingTimeout = 5000;  // Millis for exiting the 9 condition if nothing is received
-ul previousMillis = 0;        // Stores the last time the switch of the paddle's going was changed
+ul previousMillis = 0;                   // Stores the last time the switch of the paddle's going was changed
 
 // TRASHING SETUP
 bool paperAlreadyPresent = false; // True when there is a trash paper type waiting for being disposed
-bool isThrowing = false;  // When this is false the arduino read from Serial
-int trash = TRASH_NONE;   // Trash initialized ad null
+bool isThrowing = false;          // When this is false the arduino read from Serial
+int trash = TRASH_NONE;           // Trash initialized ad null
 
 // MOTOR STRUCT
 // Struct for the disk's and the cross's motor
@@ -89,7 +85,7 @@ void sendFeedbackToPi(int feedbackNumber);                               // Send
 // SETUP
 void setup() {
   // SERIAL INITIALIZATION
-  delay(1000);
+  delay(500);
   Serial.begin(115200);
   delay(serialDelay);
 
@@ -155,9 +151,6 @@ void loop() {
       } else {
         throwPaper();
       }
-      /*
-      trash == TRASH_METAL ? throwPOM(trashTypeMetal) : throwPOM(trashTypePlastic);
-      */
       // Send feedbakc to Rpi4 and start moving the paddle again
       sendFeedbackToPi(feedbackOk);
       paddleMotorStruct.power = 1;
@@ -250,7 +243,7 @@ void throwPaper(){
     rotateMotor(1, CLOCKWISE, 2);
     rotateMotor(0, COUNTER_CLOCKWISE, 1);
     paperAlreadyPresent = false;
-  }else{
+  } else {
     rotateMotor(1, COUNTER_CLOCKWISE, 1);
     paperAlreadyPresent = true;
   }
