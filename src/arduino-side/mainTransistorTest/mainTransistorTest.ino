@@ -1,14 +1,7 @@
-// TRANSISTOR DEFINITION
-// Definition for the disk's motor
-#define CLOCK_DISK_PNP 2
-#define COUNTER_DISK_PNP 3
-#define CLOCK_DISK_NPN 4
-#define COUNTER_DISK_NPN 5
-// Definition for the cross's motor
-#define CLOCK_CROSS_PNP 6
-#define COUNTER_CROSS_PNP 7
-#define CLOCK_CROSS_NPN 8
-#define COUNTER_CROSS_NPN 9
+#define CLOCK_DISK_RELAY 2
+#define COUNTER_DISK_RELAY 4
+#define CLOCK_CROSS_RELAY 7
+#define COUNTER_CROSS_RELAY 8
 // Definition for the paddle motor
 #define PADDLE_NPN 12
 
@@ -57,17 +50,15 @@ int trash = TRASH_NONE;   // Trash initialized ad null
 // MOTOR STRUCT
 // Struct for the disk's and the cross's motor
 typedef struct {
-  int CLOCK_NPN;
-  int CLOCK_PNP;
-  int COUNTER_NPN;
-  int COUNTER_PNP;
+  int COUNTER_RELAY;
+  int CLOCK_RELAY;
   int HALL;
 } MotorData;
-// Array that assigns transistor pins and Hall sensor pins to each motor (disk and cross)
-static const MotorData motorData[2] = {
-  {CLOCK_DISK_NPN, CLOCK_DISK_PNP, COUNTER_DISK_NPN, COUNTER_DISK_PNP, HALL_DISK},
-  {CLOCK_CROSS_NPN, CLOCK_CROSS_PNP, COUNTER_CROSS_NPN, COUNTER_CROSS_PNP, HALL_CROSS}
+static const MotorData motorData[] = {
+  {COUNTER_DISK_RELAY, CLOCK_DISK_RELAY, HALL_DISK},
+  {COUNTER_CROSS_RELAY, CLOCK_CROSS_RELAY, HALL_CROSS}
 };
+
 // Struct for the paddle's motor
 typedef struct {
   bool power;  // Indicates if the paddle should be moving (true) or not (false)
@@ -102,16 +93,10 @@ void setup() {
   pinMode(PADDLE_NPN, OUTPUT);
   // Setting the disk's and cross's transistors
   for (int i = 0; i < 2; i++) {
-    // Set the transistors pin to output
-    pinMode(motorData[i].CLOCK_NPN, OUTPUT);
-    pinMode(motorData[i].CLOCK_PNP, OUTPUT);
-    pinMode(motorData[i].COUNTER_NPN, OUTPUT);
-    pinMode(motorData[i].COUNTER_PNP, OUTPUT);
-    // Turning off the transistors
-    digitalWrite(motorData[i].CLOCK_NPN, LOW);
-    digitalWrite(motorData[i].CLOCK_PNP, LOW);
-    digitalWrite(motorData[i].COUNTER_NPN, LOW);
-    digitalWrite(motorData[i].COUNTER_PNP, LOW);
+    pinMode(motorData[i].COUNTER_RELAY, OUTPUT);
+    pinMode(motorData[i].CLOCK_RELAY, OUTPUT);
+    digitalWrite(motorData[i].COUNTER_RELAY, LOW);
+    digitalWrite(motorData[i].CLOCK_RELAY, LOW);
   }
   // Make the paddle move
   paddleMotorStruct.power = 1;
@@ -120,6 +105,7 @@ void setup() {
   // CALIBRATION
   //rotateMotor(0, COUNTER_CLOCKWISE, 4); // Disk calibration
   rotateMotor(1, CLOCKWISE, 1); // Cross calibration
+  rotateMotor(0, COUNTER_CLOCKWISE, 1); // Cross calibration
 }
 
 // LOOP
@@ -186,10 +172,8 @@ void turnMotorsOff(const int motorIndexes[]){
   // Setting to LOW all the transistor of the motors passed
 	for (int i=0; motorIndexes[i] != MOTOR_INDEX_END_FLAG; i++){
     const MotorData& motor = motorData[motorIndexes[i]];
-    digitalWrite(motor.CLOCK_NPN, LOW);
-    digitalWrite(motor.CLOCK_PNP, LOW);
-    digitalWrite(motor.COUNTER_NPN, LOW);
-    digitalWrite(motor.COUNTER_PNP, LOW);
+    digitalWrite(motor.CLOCK_RELAY, LOW);
+    digitalWrite(motor.COUNTER_RELAY, LOW);
 	}
 }
 
@@ -243,7 +227,6 @@ void throwPOM(TrashType trashType){
   trash = TRASH_NONE;
 }
 
-// Function for throwing paper
 void throwPaper(){
   if(paperAlreadyPresent){
     rotateMotor(0, CLOCKWISE, 1);
@@ -265,7 +248,7 @@ int getTrashFromPi() {
   int trashGet = TRASH_NONE;
   if (Serial.available() > 0) {
     trashGet = Serial.parseInt();  // Get serial input
-    if ((trashGet < TRASH_NONE || trashGet > TRASH_PLASTIC) && trashGet != TRASH_INCOMING) {
+    if ((trashGet < TRASH_NONE || trashGet > TRASH_PAPER) && trashGet != TRASH_INCOMING) {
       trashGet = TRASH_NONE;  // Reset to default if invalid
     }
   }
