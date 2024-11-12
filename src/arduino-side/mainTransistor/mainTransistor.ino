@@ -118,7 +118,6 @@ void setup() {
   paddleMotorStruct.going = 1;
 
   // CALIBRATION
-  //rotateMotor(0, COUNTER_CLOCKWISE, 4); // Disk calibration
   rotateMotor(1, CLOCKWISE, 1); // Cross calibration
 }
 
@@ -265,7 +264,7 @@ int getTrashFromPi() {
   int trashGet = TRASH_NONE;
   if (Serial.available() > 0) {
     trashGet = Serial.parseInt();  // Get serial input
-    if ((trashGet < TRASH_NONE || trashGet > TRASH_PLASTIC) && trashGet != TRASH_INCOMING) {
+    if ((trashGet < TRASH_NONE || trashGet > TRASH_PAPER) && trashGet != TRASH_INCOMING) {
       trashGet = TRASH_NONE;  // Reset to default if invalid
     }
   }
