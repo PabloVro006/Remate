@@ -2,28 +2,29 @@
 #include "config.h"
 
 // DEFINE FUNCTIONS
-// Hall reading function
+// Reads the output values of the hall passed in the parameter
 bool hallCheck(int hall) {
-  delay(serialDelay);
-  int reading = analogRead(hall);  // Read the output of the hall passed
-  return (reading > hallThresholdLow && reading < hallThresholdHigh);  // Check if a magnet is detected
+  int reading = analogRead(hall);  // Read the output of the hall passed and stores it in the 'reading' variable
+  return (reading > hallThresholdLow && reading < hallThresholdHigh);  // Check if a magnet is detected, if so returns false
 }
 
-// Turn off motors
 /*
-The parameter is a list containg all the motor's indexes that has to be turned off.
+The parameter is a list containg all the motor's indexes that must be turned off.
 The last value of the list is a 0xFF flag, indicating the end for the loop.
 */
 void turnMotorsOff(const int motorIndexes[]){
-  // Setting to LOW all the transistor of the motors passed
-	for (int i=0; motorIndexes[i] != MOTOR_INDEXES_END_FLAG; i++){
+  // Setting to LOW all the pins of the motors passed
+  for (int i = 0; motorIndexes[i] != MOTOR_INDEXES_END_FLAG; i++){
     const MotorData& motor = motorData[motorIndexes[i]];
     digitalWrite(motor.CLOCK_PIN, LOW);
     digitalWrite(motor.COUNTER_PIN, LOW);
-	}
+  }
 }
 
-// Main function for the paddle motor's transistor handling
+/*
+Checks the state of the power and going variable of the paddleMotorStruct and if both are
+true then sets the trasistor's pin to HIGH in order to make the motor move.
+*/
 void controlPaddleMotorPower(PaddleMotorStruct* paddleMotorController) {
   if(paddleMotorController->power && paddleMotorController->going) {
     digitalWrite(PADDLE_NPN, HIGH);  // Activate the transistor and so make the paddle move
@@ -32,12 +33,17 @@ void controlPaddleMotorPower(PaddleMotorStruct* paddleMotorController) {
   }
 }
 
-// Check if the interval corrisponding to the going state is over or not, and if so, switches the state
+/*
+At each state of the 'paddleMotorStruct.going' corresponds a certain time interval.
+Is verified if that interval has been past, if so the state of the 'going' variable is switched
+and so the next time that the 'controlPaddleMotorPower' function will be called the motor
+will turn off.
+*/
 void controlPaddleMotorGoing(PaddleMotorStruct* paddleMotorController){
   ul currentMillis = millis();  // Get current time
   // Checking if it's time to switch the going state of the paddle
   if (currentMillis - previousMillis >= (paddleMotorController->going ? paddleGoingInterval : paddleNotGoingInterval)) {
-    previousMillis = currentMillis;
+    previousMillis = currentMillis;  // Upadate the last time that the switch has happend
     paddleMotorController->going = !paddleMotorController->going; // Change the going state
   }
 }
@@ -53,16 +59,16 @@ void resetOffset(uint8_t motorIndex, uint8_t rotationDirection, ul movementDelay
   turnMotorsOff(motors);
 }
 
-// Generic function to move motors
 /*
-The first parameter is the index of the motors to rotate (0 -> disk, 1 -> cross)
-The third one is the times that the motor must rotate (1 times -> 1 hall detections, 2 times -> 2 hall detections...)
+The first parameter is the index of the motors to rotate (0 -> disk, 1 -> cross);
+The second one indicates in which direction the rotation must be done;
+The third one is the times that the motor must rotate (1 times -> 1 hall detections, 2 times -> 2 hall detections...);
 */
 void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
   int motors[2] = {(int)motorIndex, MOTOR_INDEXES_END_FLAG};  // Creating a list containg the motor and the 0xFF flag
-  // Move the motor away from the magnet or else the hall will detect it and the rotation won't be done
   for (int i = 0; i < times; i++) {
     const MotorData& motor = motorData[motorIndex];
+    // Move the motor away from the magnet or else the hall will detect it and the rotation won't be done
     digitalWrite(motor.COUNTER_PIN, rotationDirection);
     digitalWrite(motor.CLOCK_PIN, !rotationDirection);
     delay(rotationDelay);
@@ -71,18 +77,18 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
       digitalWrite(motor.COUNTER_PIN, rotationDirection);
       digitalWrite(motor.CLOCK_PIN, !rotationDirection);
     }
-    turnMotorsOff(motors);
+    turnMotorsOff(motors);  // When a magnet is detected than the motor can be turned off
   }
 }
 
 // Function that moves the disk and cross motor simultaneously
 void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross, uint8_t times) {
   int motors[3] = {0, 1, MOTOR_INDEXES_END_FLAG};  // Creating a list containg the motor and the 0xFF flag
-  // Move the motor away from the magnet or else the hall will detect it and the rotation won't be done
   for (int i = 0; i < times; i++) {
-    digitalWrite(motorData[0].COUNTER_PIN, rotationDirectionDisk);
+    // Move the motors away from the magnets or else the halls will detect it and the rotation won't be done
+    digitalWrite(motorData[0].COUNTER_PIN, rotationDirectionDisk);  // This and next line moves the disk's motor
     digitalWrite(motorData[0].CLOCK_PIN, !rotationDirectionDisk);
-    digitalWrite(motorData[1].COUNTER_PIN, rotationDirectionCross);
+    digitalWrite(motorData[1].COUNTER_PIN, rotationDirectionCross);  // This and net line moves the cross's motor
     digitalWrite(motorData[1].CLOCK_PIN, !rotationDirectionCross);
     delay(rotationDelay);
     // Now it can start rotating until a magnet is found from the hall
