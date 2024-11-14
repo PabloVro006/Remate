@@ -1,7 +1,7 @@
 #ifndef INC_CONFIG_H
 #define INC_CONFIG_H
 
-// TRANSISTOR DEFINITION
+// DEFINITION
 // Definition for the disk's motor
 #define CLOCK_DISK_PIN 2
 #define COUNTER_DISK_PIN 4
@@ -10,7 +10,6 @@
 #define COUNTER_CROSS_PIN 8
 // Definition for the paddle motor
 #define PADDLE_NPN 12
-
 // Useful definition
 #define MOTOR_INDEXES_END_FLAG 0xFF
 #define CLOCKWISE 0
