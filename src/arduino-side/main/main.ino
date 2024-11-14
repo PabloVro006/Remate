@@ -8,11 +8,7 @@ void setup() {
   Serial.begin(115200);
   delay(serialDelay);
 
-  // HALL INITIALIZATION
-  pinMode(HALL_DISK, INPUT);
-  pinMode(HALL_CROSS, INPUT);
-
-  // TRANSISTOR INITIALIZATION
+  // PINS INITIALIZATION
   pinMode(PADDLE_NPN, OUTPUT);
   // Setting the disk's and cross's pins
   for (int i = 0; i < 2; i++) {

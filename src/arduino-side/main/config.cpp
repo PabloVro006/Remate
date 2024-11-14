@@ -93,23 +93,23 @@ void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCros
     delay(rotationDelay);
     // Now it can start rotating until a magnet is found from the hall
     while (true){
-      digitalWrite(motorData[0].COUNTER_PIN, rotationDirectionDisk);
-      digitalWrite(motorData[0].CLOCK_PIN, !rotationDirectionDisk);
-      digitalWrite(motorData[1].COUNTER_PIN, rotationDirectionCross);
-      digitalWrite(motorData[1].CLOCK_PIN, !rotationDirectionCross);
-      if(!(hallCheck(motorData[0].HALL))){
+      digitalWrite(motorData[DISK].COUNTER_PIN, rotationDirectionDisk);
+      digitalWrite(motorData[DISK].CLOCK_PIN, !rotationDirectionDisk);
+      digitalWrite(motorData[CROSS].COUNTER_PIN, rotationDirectionCross);
+      digitalWrite(motorData[CROSS].CLOCK_PIN, !rotationDirectionCross);
+      if(!(hallCheck(motorData[DISK].HALL))){
         turnMotorsOff((const int[]){DISK, MOTOR_INDEXES_END_FLAG});
-        while (hallCheck(motorData[1].HALL)) {
+        while (hallCheck(motorData[CROSS].HALL)) {
           digitalWrite(motorData[CROSS].COUNTER_PIN, rotationDirectionCross);
           digitalWrite(motorData[CROSS].CLOCK_PIN, !rotationDirectionCross);
         }
         break;
       }
-      if(!(hallCheck(motorData[1].HALL))){
-        turnMotorsOff((const int[]){1, MOTOR_INDEXES_END_FLAG});
-        while (hallCheck(motorData[0].HALL)) {
-          digitalWrite(motorData[0].COUNTER_PIN, rotationDirectionDisk);
-          digitalWrite(motorData[0].CLOCK_PIN, !rotationDirectionDisk);
+      if(!(hallCheck(motorData[CROSS].HALL))){
+        turnMotorsOff((const int[]){CROSS, MOTOR_INDEXES_END_FLAG});
+        while (hallCheck(motorData[DISK].HALL)) {
+          digitalWrite(motorData[DISK].COUNTER_PIN, rotationDirectionDisk);
+          digitalWrite(motorData[DISK].CLOCK_PIN, !rotationDirectionDisk);
         }
         break;
       }      
@@ -139,8 +139,8 @@ trash and then dispose both of them.
 void throwPaper(){
   if(paperAlreadyPresent){
     rotateMotorSIM(CLOCKWISE, COUNTER_CLOCKWISE, 1);
-    rotateMotor(1, COUNTER_CLOCKWISE, 1);
-    rotateMotor(1, CLOCKWISE, 1);
+    rotateMotor(CROSS, COUNTER_CLOCKWISE, 1);
+    rotateMotor(CROSS, CLOCKWISE, 1);
     rotateMotorSIM(COUNTER_CLOCKWISE, CLOCKWISE, 1);
     paperAlreadyPresent = false;
   } else {
