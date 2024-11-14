@@ -28,7 +28,7 @@ true then sets the trasistor's pin to HIGH in order to make the motor move.
 void controlPaddleMotorPower(PaddleMotorStruct* paddleMotorController) {
   if(paddleMotorController->power && paddleMotorController->going) {
     digitalWrite(PADDLE_NPN, HIGH);  // Activate the transistor and so make the paddle move
-  }else{
+  } else {
     digitalWrite(PADDLE_NPN, LOW);  // Setting the transistor to LOW and so make the paddle stop
   }
 }
@@ -83,13 +83,13 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
 
 // Function that moves the disk and cross motor simultaneously
 void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross, uint8_t times) {
-  int motors[3] = {0, 1, MOTOR_INDEXES_END_FLAG};  // Creating a list containg the motor and the 0xFF flag
+  int motors[3] = {DISK, CROSS, MOTOR_INDEXES_END_FLAG};  // Creating a list containg the motor and the 0xFF flag
   for (int i = 0; i < times; i++) {
     // Move the motors away from the magnets or else the halls will detect it and the rotation won't be done
-    digitalWrite(motorData[0].COUNTER_PIN, rotationDirectionDisk);  // This and next line moves the disk's motor
-    digitalWrite(motorData[0].CLOCK_PIN, !rotationDirectionDisk);
-    digitalWrite(motorData[1].COUNTER_PIN, rotationDirectionCross);  // This and net line moves the cross's motor
-    digitalWrite(motorData[1].CLOCK_PIN, !rotationDirectionCross);
+    digitalWrite(motorData[DISK].COUNTER_PIN, rotationDirectionDisk);  // This and next line moves the disk's motor
+    digitalWrite(motorData[DISK].CLOCK_PIN, !rotationDirectionDisk);
+    digitalWrite(motorData[CROSS].COUNTER_PIN, rotationDirectionCross);  // This and net line moves the cross's motor
+    digitalWrite(motorData[CROSS].CLOCK_PIN, !rotationDirectionCross);
     delay(rotationDelay);
     // Now it can start rotating until a magnet is found from the hall
     while (true){
@@ -98,10 +98,10 @@ void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCros
       digitalWrite(motorData[1].COUNTER_PIN, rotationDirectionCross);
       digitalWrite(motorData[1].CLOCK_PIN, !rotationDirectionCross);
       if(!(hallCheck(motorData[0].HALL))){
-        turnMotorsOff((const int[]){0, MOTOR_INDEXES_END_FLAG});
+        turnMotorsOff((const int[]){DISK, MOTOR_INDEXES_END_FLAG});
         while (hallCheck(motorData[1].HALL)) {
-          digitalWrite(motorData[1].COUNTER_PIN, rotationDirectionCross);
-          digitalWrite(motorData[1].CLOCK_PIN, !rotationDirectionCross);
+          digitalWrite(motorData[CROSS].COUNTER_PIN, rotationDirectionCross);
+          digitalWrite(motorData[CROSS].CLOCK_PIN, !rotationDirectionCross);
         }
         break;
       }
@@ -118,9 +118,9 @@ void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCros
   }
 }
 
-// Throw function for disposing both plastic trashes or metal trashes
+// Throw function for disposing both plastic trashes and metal trashes
 void throwPOM(TrashType trashType){
-  uint8_t motorIndex = (trashType == TRASH_METAL) ? 0 : 1;  // 0 is the motor index for the disk, 1 the motor index for the cross
+  uint8_t motorIndex = (trashType == TRASH_METAL) ? DISK : CROSS;  // 0 is the motor index for the disk, 1 the motor index for the cross
   uint8_t rotationDirection = (trashType == TRASH_METAL) ? COUNTER_CLOCKWISE : CLOCKWISE;
   rotateMotor(motorIndex, rotationDirection, 1);
   delay(serialDelay);
@@ -144,14 +144,14 @@ void throwPaper(){
     rotateMotorSIM(COUNTER_CLOCKWISE, CLOCKWISE, 1);
     paperAlreadyPresent = false;
   } else {
-    rotateMotor(1, COUNTER_CLOCKWISE, 1);
+    rotateMotor(CROSS, COUNTER_CLOCKWISE, 1);
     paperAlreadyPresent = true;
   }
   trash = TRASH_NONE;
 }
 
 // RPI4 COMMUNICATION
-// Get trash from Rpi4
+// Read from serial if something is coming and only accepts values between 0 and 3 or equal to 9
 int getTrashFromPi() {  
   Serial.flush();  // Clear the outgoing buffer
   int trashGet = TRASH_NONE;

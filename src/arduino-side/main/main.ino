@@ -9,16 +9,16 @@ void setup() {
   delay(serialDelay);
 
   // HALL INITIALIZATION
-  // Setting this to input for reading the hall's output
   pinMode(HALL_DISK, INPUT);
   pinMode(HALL_CROSS, INPUT);
 
   // TRANSISTOR INITIALIZATION
   pinMode(PADDLE_NPN, OUTPUT);
-  // Setting the disk's and cross's transistors
+  // Setting the disk's and cross's pins
   for (int i = 0; i < 2; i++) {
     pinMode(motorData[i].COUNTER_PIN, OUTPUT);
     pinMode(motorData[i].CLOCK_PIN, OUTPUT);
+    pinMode(motorData[i].HALL, INPUT);  // Setting this to input for reading the hall's output
     digitalWrite(motorData[i].COUNTER_PIN, LOW);
     digitalWrite(motorData[i].CLOCK_PIN, LOW);
   }
@@ -27,8 +27,8 @@ void setup() {
   paddleMotorStruct.going = 1;
 
   // CALIBRATION
-  rotateMotor(1, CLOCKWISE, 1); // Cross calibration
-  resetOffset(1, COUNTER_CLOCKWISE, 150);
+  rotateMotor(CROSS, CLOCKWISE, 1); // Cross calibration
+  resetOffset(CROSS, COUNTER_CLOCKWISE, 150);
 }
 
 // LOOP

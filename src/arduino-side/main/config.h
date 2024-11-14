@@ -14,6 +14,9 @@
 #define MOTOR_INDEXES_END_FLAG 0xFF
 #define CLOCKWISE 0
 #define COUNTER_CLOCKWISE 1
+// Definition for the motors indexes
+#define DISK 0
+#define CROSS 1
 
 // Typedefinition for unsigned long type
 typedef unsigned long ul;
