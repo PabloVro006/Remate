@@ -9,6 +9,9 @@
 #define COUNTER_CROSS_PNP 7
 #define CLOCK_CROSS_NPN 8
 #define COUNTER_CROSS_NPN 9
+// Definition of the step down regulator
+#define DISK_MOTOR_REGULATOR 10
+#define CROSS_MOTOR_REGULATOR 11
 // Definition for the paddle motor
 #define PADDLE_NPN 12
 
@@ -216,6 +219,8 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
   // Move the motor away from the magnet or else the hall will detect it and the rotation won't be done
   for (int i = 0; i < times; i++) {
     const MotorData& motor = motorData[motorIndex];
+
+
     digitalWrite(motor.COUNTER_RELAY, rotationDirection);
     digitalWrite(motor.CLOCK_RELAY, !rotationDirection);
     delay(rotationDelay);

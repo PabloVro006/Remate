@@ -1,7 +1,10 @@
-#define CLOCK_DISK_RELAY 2
-#define COUNTER_DISK_RELAY 4
-#define CLOCK_CROSS_RELAY 7
-#define COUNTER_CROSS_RELAY 8
+// TRANSISTOR DEFINITION
+// Definition for the disk's motor
+#define CLOCK_DISK_PIN 2
+#define COUNTER_DISK_PIN 4
+// Definition for the cross's motor
+#define CLOCK_CROSS_PIN 7
+#define COUNTER_CROSS_PIN 8
 // Definition for the paddle motor
 #define PADDLE_NPN 12
 
@@ -32,13 +35,10 @@ const int hallThresholdLow = 400;  // If hall's value < than this, there is a ma
 const int hallThresholdHigh = 550; // If hall's value > thas this, there is amagnet
 const int rotationDelay = 1000;    // Millis for making sure that the magnet has moved away from the hall
 const int feedbackOk = 42;         // Number to send at the Rpi4 when throwing is over
-// Assign variables to represent specific trash types
-const TrashType trashTypeMetal = TRASH_METAL;
-const TrashType trashTypePlastic = TRASH_PLASTIC;
-const TrashType trashTypePaper = TRASH_PAPER;
 // Logic for the paddle motor going delay
-const long paddleGoingInterval = 200;    // Millis indicating the time of paddle's going
-const long paddleNotGoingInterval = 675; // Millis indicating the time of paddle's stopping
+const long paddleGoingInterval = 90;    // Millis indicating the time of paddle's going
+// was 200 and 675 with 6v
+const long paddleNotGoingInterval = 1000; // Millis indicating the time of paddle's stopping
 const long trashIncomingTimeout = 5000;  // Millis for exiting the 9 condition if nothing is received
 ul previousMillis = 0;                   // Stores the last time the switch of the paddle's going was changed
 
@@ -50,13 +50,13 @@ int trash = TRASH_NONE;           // Trash initialized ad null
 // MOTOR STRUCT
 // Struct for the disk's and the cross's motor
 typedef struct {
-  int COUNTER_RELAY;
-  int CLOCK_RELAY;
+  int COUNTER_PIN;
+  int CLOCK_PIN;
   int HALL;
 } MotorData;
 static const MotorData motorData[] = {
-  {COUNTER_DISK_RELAY, CLOCK_DISK_RELAY, HALL_DISK},
-  {COUNTER_CROSS_RELAY, CLOCK_CROSS_RELAY, HALL_CROSS}
+  {COUNTER_DISK_PIN, CLOCK_DISK_PIN, HALL_DISK},
+  {COUNTER_CROSS_PIN, CLOCK_CROSS_PIN, HALL_CROSS}
 };
 
 // Struct for the paddle's motor
@@ -71,9 +71,10 @@ bool hallCheck(int hall);                                                // Chec
 void turnMotorsOff(const int motorIndexes[]);                            // Turn off motor passed in the array
 void controlPaddleMotorPower(PaddleMotorStruct* paddleMotorController);  // Main function for the paddle motor's transistor handling
 void controlPaddleMotorGoing(PaddleMotorStruct* paddleMotorController);  // Control paddle motor going state depending on time
+void resetOffset(uint8_t motorIndex, uint8_t rotationDirection);         // CHOOSE DESCRITION AND NAME(?)
 void rotateMotor(uint8_t motorIndex, uint8_t direction, uint8_t times);  // Rotate cross's or disk's motor
-void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross, uint8_t times);
-void throwPOM(TrashType trashType);                                      // Throw POM(plastic or metal)
+void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross, uint8_t times);  // Rotate simultaneously the cross's and the disk's motor
+void throwPOM(TrashType trashType);                                      // Throw POM (plastic or metal)
 void throwPaper();                                                       // Function to handle paper trashes 
 int getTrashFromPi();                                                    // Get the Serial input from Rpi4
 void sendFeedbackToPi(int feedbackNumber);                               // Send the Serial feedback to Rpi4
@@ -94,10 +95,10 @@ void setup() {
   pinMode(PADDLE_NPN, OUTPUT);
   // Setting the disk's and cross's transistors
   for (int i = 0; i < 2; i++) {
-    pinMode(motorData[i].COUNTER_RELAY, OUTPUT);
-    pinMode(motorData[i].CLOCK_RELAY, OUTPUT);
-    digitalWrite(motorData[i].COUNTER_RELAY, LOW);
-    digitalWrite(motorData[i].CLOCK_RELAY, LOW);
+    pinMode(motorData[i].COUNTER_PIN, OUTPUT);
+    pinMode(motorData[i].CLOCK_PIN, OUTPUT);
+    digitalWrite(motorData[i].COUNTER_PIN, LOW);
+    digitalWrite(motorData[i].CLOCK_PIN, LOW);
   }
   // Make the paddle move
   paddleMotorStruct.power = 1;
@@ -105,6 +106,7 @@ void setup() {
 
   // CALIBRATION
   rotateMotor(1, CLOCKWISE, 1); // Cross calibration
+  resetOffset(1, COUNTER_CLOCKWISE, 150);
 }
 
 // LOOP
@@ -141,9 +143,6 @@ void loop() {
       } else {
         throwPaper();
       }
-      /*
-      trash == TRASH_METAL ? throwPOM(trashTypeMetal) : throwPOM(trashTypePlastic);
-      */
       // Send feedbakc to Rpi4 and start moving the paddle again
       sendFeedbackToPi(feedbackOk);
       paddleMotorStruct.power = 1;
@@ -171,8 +170,8 @@ void turnMotorsOff(const int motorIndexes[]){
   // Setting to LOW all the transistor of the motors passed
 	for (int i=0; motorIndexes[i] != MOTOR_INDEX_END_FLAG; i++){
     const MotorData& motor = motorData[motorIndexes[i]];
-    digitalWrite(motor.CLOCK_RELAY, LOW);
-    digitalWrite(motor.COUNTER_RELAY, LOW);
+    digitalWrite(motor.CLOCK_PIN, LOW);
+    digitalWrite(motor.COUNTER_PIN, LOW);
 	}
 }
 
@@ -195,6 +194,17 @@ void controlPaddleMotorGoing(PaddleMotorStruct* paddleMotorController){
   }
 }
 
+// Function to set the offset
+void resetOffset(uint8_t motorIndex, uint8_t rotationDirection, ul movementDelay){
+  int motors[2] = {(int)motorIndex, MOTOR_INDEX_END_FLAG};  // Creating a list containg the motor and the 0xFF flag
+  const MotorData& motor = motorData[motorIndex];
+  delay(200);
+  digitalWrite(motor.COUNTER_PIN, rotationDirection);
+  digitalWrite(motor.CLOCK_PIN, !rotationDirection);
+  delay(movementDelay);  // 150
+  turnMotorsOff(motors);
+}
+
 // Generic function to move motors
 /*
 The first parameter is the index of the motors to rotate (0 -> disk, 1 -> cross)
@@ -205,47 +215,47 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
   // Move the motor away from the magnet or else the hall will detect it and the rotation won't be done
   for (int i = 0; i < times; i++) {
     const MotorData& motor = motorData[motorIndex];
-    digitalWrite(motor.COUNTER_RELAY, rotationDirection);
-    digitalWrite(motor.CLOCK_RELAY, !rotationDirection);
+    digitalWrite(motor.COUNTER_PIN, rotationDirection);
+    digitalWrite(motor.CLOCK_PIN, !rotationDirection);
     delay(rotationDelay);
     // Now it can start rotating until a magnet is found from the hall
     while (hallCheck(motorData[motorIndex].HALL)) {
-      digitalWrite(motor.COUNTER_RELAY, rotationDirection);
-      digitalWrite(motor.CLOCK_RELAY, !rotationDirection);
+      digitalWrite(motor.COUNTER_PIN, rotationDirection);
+      digitalWrite(motor.CLOCK_PIN, !rotationDirection);
     }
     turnMotorsOff(motors);
   }
 }
 
-// Function that moves the disc and paddle motor simultaneously
+// Function that moves the disk and cross motor simultaneously
 void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross, uint8_t times) {
   int motors[3] = {0, 1, MOTOR_INDEX_END_FLAG};  // Creating a list containg the motor and the 0xFF flag
   // Move the motor away from the magnet or else the hall will detect it and the rotation won't be done
   for (int i = 0; i < times; i++) {
-    digitalWrite(motorData[0].COUNTER_RELAY, rotationDirectionDisk);
-    digitalWrite(motorData[0].CLOCK_RELAY, !rotationDirectionDisk);
-    digitalWrite(motorData[1].COUNTER_RELAY, rotationDirectionCross);
-    digitalWrite(motorData[1].CLOCK_RELAY, !rotationDirectionCross);
+    digitalWrite(motorData[0].COUNTER_PIN, rotationDirectionDisk);
+    digitalWrite(motorData[0].CLOCK_PIN, !rotationDirectionDisk);
+    digitalWrite(motorData[1].COUNTER_PIN, rotationDirectionCross);
+    digitalWrite(motorData[1].CLOCK_PIN, !rotationDirectionCross);
     delay(rotationDelay);
     // Now it can start rotating until a magnet is found from the hall
     while (true){
-      digitalWrite(motorData[0].COUNTER_RELAY, rotationDirectionDisk);
-      digitalWrite(motorData[0].CLOCK_RELAY, !rotationDirectionDisk);
-      digitalWrite(motorData[1].COUNTER_RELAY, rotationDirectionCross);
-      digitalWrite(motorData[1].CLOCK_RELAY, !rotationDirectionCross);
+      digitalWrite(motorData[0].COUNTER_PIN, rotationDirectionDisk);
+      digitalWrite(motorData[0].CLOCK_PIN, !rotationDirectionDisk);
+      digitalWrite(motorData[1].COUNTER_PIN, rotationDirectionCross);
+      digitalWrite(motorData[1].CLOCK_PIN, !rotationDirectionCross);
       if(!(hallCheck(motorData[0].HALL))){
         turnMotorsOff((const int[]){0, MOTOR_INDEX_END_FLAG});
         while (hallCheck(motorData[1].HALL)) {
-          digitalWrite(motorData[1].COUNTER_RELAY, rotationDirectionCross);
-          digitalWrite(motorData[1].CLOCK_RELAY, !rotationDirectionCross);
+          digitalWrite(motorData[1].COUNTER_PIN, rotationDirectionCross);
+          digitalWrite(motorData[1].CLOCK_PIN, !rotationDirectionCross);
         }
         break;
       }
       if(!(hallCheck(motorData[1].HALL))){
         turnMotorsOff((const int[]){1, MOTOR_INDEX_END_FLAG});
         while (hallCheck(motorData[0].HALL)) {
-          digitalWrite(motorData[0].COUNTER_RELAY, rotationDirectionDisk);
-          digitalWrite(motorData[0].CLOCK_RELAY, !rotationDirectionDisk);
+          digitalWrite(motorData[0].COUNTER_PIN, rotationDirectionDisk);
+          digitalWrite(motorData[0].CLOCK_PIN, !rotationDirectionDisk);
         }
         break;
       }      
@@ -261,9 +271,17 @@ void throwPOM(TrashType trashType){
   rotateMotor(motorIndex, rotationDirection, 1);
   delay(serialDelay);
   rotateMotor(motorIndex, !rotationDirection, 1);
+  uint8_t offsetDelay = (trashType == TRASH_PLASTIC) ? 150 : 95;
+  resetOffset(motorIndex, rotationDirection, offsetDelay);
   trash = TRASH_NONE;
 }
 
+/*
+If there is no paper trash yet, it simply moves the new one and wait
+for a second trash to dispose them in the same movement.
+If a paper trash is already present then moves both the old and the new
+trash and then dispose both of them.
+*/
 void throwPaper(){
   if(paperAlreadyPresent){
     rotateMotorSIM(CLOCKWISE, COUNTER_CLOCKWISE, 1);
