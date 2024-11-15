@@ -11,6 +11,9 @@
 #define COUNTER_CROSS_PIN 8
 // Definition for the paddle's motor
 #define PADDLE_NPN 12
+// Definition for the hall's
+#define HALL_DISK A0
+#define HALL_CROSS A1
 // Useful definition
 #define MOTOR_INDEXES_END_FLAG 0xFF
 #define CLOCKWISE 0
@@ -30,10 +33,6 @@ enum TrashType {
   TRASH_PAPER = 3,
   TRASH_INCOMING = 9,  // 9 is a flag indicating that something has been detected from the Rpi4, but it's not defined yet
 };
-
-// HALL DEFINITION
-extern const int HALL_DISK;
-extern const int HALL_CROSS;
 
 // CONSTANTS
 extern ul serialDelay;        // Short delay for Serial related actions

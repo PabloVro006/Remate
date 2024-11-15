@@ -2,8 +2,6 @@
 #include "config.h"
 
 // DEFINE VARIABLES
-const int HALL_DISK = A0;
-const int HALL_CROSS = A1;
 ul serialDelay = 20;
 ul rotationDelay = 1000;
 ul crossOffsetDelay = 150;
