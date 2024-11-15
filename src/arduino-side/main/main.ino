@@ -18,9 +18,6 @@ void setup() {
     digitalWrite(motorData[i].COUNTER_PIN, LOW);
     digitalWrite(motorData[i].CLOCK_PIN, LOW);
   }
-  // Make the paddle move
-  paddleMotorStruct.power = 1;
-  paddleMotorStruct.going = 1;
 
   // CALIBRATION
   rotateMotor(CROSS, CLOCKWISE, 1); // Cross calibration
@@ -42,15 +39,16 @@ void loop() {
       if(trash == TRASH_INCOMING){
         // Wait max 5 seconds for the defined trash
         ul startMillis = millis();
+        // In order to break the while or a trash is detected or 5 seconds passes
         while(trash == TRASH_INCOMING || trash == TRASH_NONE){
           ul currentMillisForTrashIncoming = millis();
-          trash = getTrashFromPi();
+          trash = getTrashFromPi();  // While waiting keeps to update the trash variable
           delay(serialDelay);
           // Checking if the 5 seconds max has passed
           if(currentMillisForTrashIncoming - startMillis >= trashIncomingTimeout){
             // Resets all the variable and restarts the loop()
-            trash = TRASH_NONE;
-            paddleMotorStruct.power = 1;
+            trash = TRASH_NONE;  // Re-setting the trash variable
+            paddleMotorStruct.power = 1;  // Make the paddle move again
             return;
           }
         };
@@ -58,13 +56,12 @@ void loop() {
       isThrowing = true;  // This is useful for stopping the data reception from the Rpi4
       if(trash == TRASH_METAL || trash == TRASH_PLASTIC){
         throwPOM(trash);
-      } else {
+      } else {  // At this point trash must be TRASH_PAPER
         throwPaper();
       }
-      // Send feedbakc to Rpi4 and start moving the paddle again
+      // Send feedback to Rpi4 and start moving the paddle again
       sendFeedbackToPi(feedbackOk);
-      paddleMotorStruct.power = 1;
-      paddleMotorStruct.going = 0;
+      paddleMotorStruct = {1, 0};  // Power = 1, going = 0
     }
   }
   // Call the function for moving the paddle based on the parameters that as been changed

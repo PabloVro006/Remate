@@ -20,7 +20,7 @@ const MotorData motorData[] = {
   {COUNTER_DISK_PIN, CLOCK_DISK_PIN, HALL_DISK},
   {COUNTER_CROSS_PIN, CLOCK_CROSS_PIN, HALL_CROSS}
 };
-PaddleMotorStruct paddleMotorStruct = {1, 1};
+PaddleMotorStruct paddleMotorStruct = {1, 1};  // Initialize this at {1, 1} to make the paddle move
 
 // DEFINE FUNCTIONS
 // Reads the output values of the hall passed in the parameter
