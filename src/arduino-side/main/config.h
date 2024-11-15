@@ -77,6 +77,7 @@ void controlPaddleMotorPower(PaddleMotorStruct* paddleMotorController);  // Main
 void controlPaddleMotorGoing(PaddleMotorStruct* paddleMotorController);  // Control paddle motor's going state depending on time
 void resetMotorOffset(uint8_t motorIndex, uint8_t rotationDirection, ul movementDelay);  // Adjusts the motor's offset after a rotation has occurred
 void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times);  // Rotate cross's or disk's motor
+void enableMotorSIM(const uint8_t directions[]);                         // Enable both the disk's motor and the cross's motor simultaneously
 void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross);  // Rotate simultaneously the cross's and the disk's motor
 void throwPOM(TrashType trashType);                                      // Throw POM (plastic or metal)
 void throwPaper();                                                       // Function to handle paper trashes 

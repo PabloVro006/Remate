@@ -109,21 +109,24 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
   }
 }
 
+void enableMotorSIM(const uint8_t directions[]){
+  digitalWrite(motorData[DISK].COUNTER_PIN, directions[0]);  // This and next line moves the disk's motor
+  digitalWrite(motorData[DISK].CLOCK_PIN, !directions[0]);
+  digitalWrite(motorData[CROSS].COUNTER_PIN, directions[1]);  // This and net line moves the cross's motor
+  digitalWrite(motorData[CROSS].CLOCK_PIN, !directions[1]);
+}
+
 // Function that moves the disk and cross motor simultaneously
 void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross) {
   int motors[3] = {DISK, CROSS, MOTOR_INDEXES_END_FLAG};  // Creating a list containg the motor and the 0xFF flag
+  uint8_t directions[2] = {rotationDirectionDisk, rotationDirectionCross};
   // Move the motors away from the magnets or else the halls will detect it and the rotation won't be done
-  digitalWrite(motorData[DISK].COUNTER_PIN, rotationDirectionDisk);  // This and next line moves the disk's motor
-  digitalWrite(motorData[DISK].CLOCK_PIN, !rotationDirectionDisk);
-  digitalWrite(motorData[CROSS].COUNTER_PIN, rotationDirectionCross);  // This and net line moves the cross's motor
-  digitalWrite(motorData[CROSS].CLOCK_PIN, !rotationDirectionCross);
+  enableMotorSIM(directions);
   delay(rotationDelay);
   // Now it can start rotating until a magnet is found from the hall
   while (true){
-    digitalWrite(motorData[DISK].COUNTER_PIN, rotationDirectionDisk);
-    digitalWrite(motorData[DISK].CLOCK_PIN, !rotationDirectionDisk);
-    digitalWrite(motorData[CROSS].COUNTER_PIN, rotationDirectionCross);
-    digitalWrite(motorData[CROSS].CLOCK_PIN, !rotationDirectionCross);
+    enableMotorSIM(directions);  // Keeps to moves both of them simultaneously
+    // If the disk's hall detects a magnet then stops the disk and keep moving the cross until it's hall also detects a magnet
     if(!(hallCheck(motorData[DISK].HALL))){
       turnMotorsOff((const int[]){DISK, MOTOR_INDEXES_END_FLAG});
       while (hallCheck(motorData[CROSS].HALL)) {
