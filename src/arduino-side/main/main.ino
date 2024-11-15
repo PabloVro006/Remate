@@ -21,7 +21,7 @@ void setup() {
 
   // CALIBRATION
   rotateMotor(CROSS, CLOCKWISE, 1); // Cross calibration
-  resetOffset(CROSS, COUNTER_CLOCKWISE, 150);
+  resetMotorOffset(CROSS, COUNTER_CLOCKWISE, 150);
 }
 
 // LOOP

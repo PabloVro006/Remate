@@ -14,13 +14,14 @@
 // Definition for the hall's
 #define HALL_DISK A0
 #define HALL_CROSS A1
-// Useful definition
-#define MOTOR_INDEXES_END_FLAG 0xFF
+// Definitions for the directions of rotation
 #define CLOCKWISE 0
 #define COUNTER_CLOCKWISE 1
 // Definition for the motors indexes
 #define DISK 0
 #define CROSS 1
+// Useful definition
+#define MOTOR_INDEXES_END_FLAG 0xFF  // This will be useful for turning the motors off
 
 // Typedefinition for unsigned long type
 typedef unsigned long ul;
@@ -35,23 +36,23 @@ enum TrashType {
 };
 
 // CONSTANTS
-extern ul serialDelay;       // Short delay for Serial related actions
-extern ul rotationDelay;     // Millis for making sure that the magnet has moved away from the hall
-extern ul crossOffsetDelay;  // Millis for adjusting the cross after a rotation
-extern ul diskOffsetDelay;   // Millis for adjusting the disk after a rotation
+extern ul serialDelay;               // Millis for Serial related actions
+extern ul rotationDelay;             // Millis for making sure that the magnet has moved away from the hall
+extern ul crossOffsetDelay;          // Millis for adjusting the cross after a rotation
+extern ul diskOffsetDelay;           // Millis for adjusting the disk after a rotation
 extern const int hallThresholdLow;   // If hall's value < than this, there is a magnet
 extern const int hallThresholdHigh;  // If hall's value > than this, there is a magnet
 extern const int feedbackOk;         // Number to send at the Rpi4 when throwing is over
 // Logic for the paddle motor going delay -> // 200 and 675 with 6v
-extern ul paddleGoingInterval;     // Millis indicating the time of paddle's going
-extern ul paddleNotGoingInterval;  // Millis indicating the time of paddle's stopping
-extern ul trashIncomingTimeout;    // Millis for exiting the 9 condition if nothing is received
-extern ul previousMillis;          // Stores the last time the switch of the paddle's going was changed
+extern ul paddleGoingInterval;       // Millis indicating the time of paddle's going
+extern ul paddleNotGoingInterval;    // Millis indicating the time of paddle's stopping
+extern ul trashIncomingTimeout;      // Millis for exiting the 9 condition if nothing is received
+extern ul previousMillis;            // Stores the last time that the paddle's going variable has changed
 
 // TRASHING SETUP
-extern bool paperAlreadyPresent;  // True when there is a paper trash type waiting for being disposed
-extern bool isThrowing;           // When this is false the arduino read from Serial
-extern TrashType trash;           // Trash initialized as null
+extern bool paperAlreadyPresent;     // True when there is already a paper trash type waiting for being disposed
+extern bool isThrowing;              // When this is false the arduino read from the Serial, if true then all the data incoming from the Serial won't be considered
+extern TrashType trash;              // Trash initialized as null
 
 // MOTOR STRUCTS
 // Struct for the disk's and the cross's motor
@@ -60,7 +61,7 @@ typedef struct {
   int CLOCK_PIN;
   int HALL;
 } MotorData;
-extern const MotorData motorData[];
+extern const MotorData motorData[];  // List that assigns to each element of the struct a pin
 
 // Struct for the paddle's motor
 typedef struct {
@@ -73,10 +74,10 @@ extern PaddleMotorStruct paddleMotorStruct; // Instance of PaddleMotorStruct to 
 bool hallCheck(int hall);                                                // Read values from disk's or cross's hall
 void turnMotorsOff(const int motorIndexes[]);                            // Turn off motors passed in the array
 void controlPaddleMotorPower(PaddleMotorStruct* paddleMotorController);  // Main function for the paddle motor's transistor handling
-void controlPaddleMotorGoing(PaddleMotorStruct* paddleMotorController);  // Control paddle motor going state depending on time
-void resetOffset(uint8_t motorIndex, uint8_t rotationDirection, ul movementDelay);         // CHOOSE DESCRIPTION AND NAME(?)
-void rotateMotor(uint8_t motorIndex, uint8_t direction, uint8_t times);  // Rotate cross's or disk's motor
-void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross, uint8_t times);  // Rotate simultaneously the cross's and the disk's motor
+void controlPaddleMotorGoing(PaddleMotorStruct* paddleMotorController);  // Control paddle motor's going state depending on time
+void resetMotorOffset(uint8_t motorIndex, uint8_t rotationDirection, ul movementDelay);  // Adjusts the motor's offset after a rotation has occurred
+void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times);  // Rotate cross's or disk's motor
+void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross);  // Rotate simultaneously the cross's and the disk's motor
 void throwPOM(TrashType trashType);                                      // Throw POM (plastic or metal)
 void throwPaper();                                                       // Function to handle paper trashes 
 int getTrashFromPi();                                                    // Get the Serial input from Rpi4
