@@ -9,7 +9,7 @@ ul diskOffsetDelay = 95;
 const int hallThresholdLow = 400;
 const int hallThresholdHigh = 550;
 const int feedbackOk = 42;
-ul paddleGoingInterval = 90;
+ul paddleGoingInterval = 90;  // When there is no friction is too much
 ul paddleNotGoingInterval = 1000;
 ul trashIncomingTimeout = 5000;
 ul previousMillis = 0;
@@ -159,9 +159,12 @@ trash and then dispose both of them.
 void throwPaper(){
   if(paperAlreadyPresent){
     rotateMotorSIM(CLOCKWISE, COUNTER_CLOCKWISE, 1);
+    resetOffset(DISK, COUNTER_CLOCKWISE, diskOffsetDelay);
     rotateMotor(CROSS, COUNTER_CLOCKWISE, 1);
     rotateMotor(CROSS, CLOCKWISE, 1);
     rotateMotorSIM(COUNTER_CLOCKWISE, CLOCKWISE, 1);
+    resetOffset(CROSS, COUNTER_CLOCKWISE, crossOffsetDelay);
+    resetOffset(DISK, CLOCKWISE, diskOffsetDelay);
     paperAlreadyPresent = false;
   } else {
     rotateMotor(CROSS, COUNTER_CLOCKWISE, 1);

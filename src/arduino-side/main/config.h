@@ -35,10 +35,10 @@ enum TrashType {
 };
 
 // CONSTANTS
-extern ul serialDelay;        // Short delay for Serial related actions
-extern ul rotationDelay;      // Millis for making sure that the magnet has moved away from the hall
-extern ul crossOffsetDelay;   // Millis for adjusting the cross after a rotation
-extern ul diskOffsetDelay;    // Millis for adjusting the disk after a rotation
+extern ul serialDelay;       // Short delay for Serial related actions
+extern ul rotationDelay;     // Millis for making sure that the magnet has moved away from the hall
+extern ul crossOffsetDelay;  // Millis for adjusting the cross after a rotation
+extern ul diskOffsetDelay;   // Millis for adjusting the disk after a rotation
 extern const int hallThresholdLow;   // If hall's value < than this, there is a magnet
 extern const int hallThresholdHigh;  // If hall's value > than this, there is a magnet
 extern const int feedbackOk;         // Number to send at the Rpi4 when throwing is over
@@ -46,7 +46,7 @@ extern const int feedbackOk;         // Number to send at the Rpi4 when throwing
 extern ul paddleGoingInterval;     // Millis indicating the time of paddle's going
 extern ul paddleNotGoingInterval;  // Millis indicating the time of paddle's stopping
 extern ul trashIncomingTimeout;    // Millis for exiting the 9 condition if nothing is received
-extern ul previousMillis;                  // Stores the last time the switch of the paddle's going was changed
+extern ul previousMillis;          // Stores the last time the switch of the paddle's going was changed
 
 // TRASHING SETUP
 extern bool paperAlreadyPresent;  // True when there is a paper trash type waiting for being disposed
@@ -74,7 +74,7 @@ bool hallCheck(int hall);                                                // Read
 void turnMotorsOff(const int motorIndexes[]);                            // Turn off motors passed in the array
 void controlPaddleMotorPower(PaddleMotorStruct* paddleMotorController);  // Main function for the paddle motor's transistor handling
 void controlPaddleMotorGoing(PaddleMotorStruct* paddleMotorController);  // Control paddle motor going state depending on time
-void resetOffset(uint8_t motorIndex, uint8_t rotationDirection, ul movementDelay);         // CHOOSE DESCRITION AND NAME(?)
+void resetOffset(uint8_t motorIndex, uint8_t rotationDirection, ul movementDelay);         // CHOOSE DESCRIPTION AND NAME(?)
 void rotateMotor(uint8_t motorIndex, uint8_t direction, uint8_t times);  // Rotate cross's or disk's motor
 void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross, uint8_t times);  // Rotate simultaneously the cross's and the disk's motor
 void throwPOM(TrashType trashType);                                      // Throw POM (plastic or metal)
