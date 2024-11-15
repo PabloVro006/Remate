@@ -4,7 +4,7 @@
 // DEFINE VARIABLES
 ul serialDelay = 20;
 ul rotationDelay = 900;
-ul crossOffsetDelay = 150;
+ul crossOffsetDelay = 170;
 ul diskOffsetDelay = 95;
 const int hallThresholdLow = 400;
 const int hallThresholdHigh = 550;
@@ -109,42 +109,45 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times) {
   }
 }
 
+/*
+ This function moves both the motor simultaneously regardless of the halls.
+ It's used for the first part of the simultaneous rotation where i just need
+ to move the cross and the disk to make the magnet moves from the hall.
+*/
 void enableMotorSIM(const uint8_t directions[]){
-  digitalWrite(motorData[DISK].COUNTER_PIN, directions[0]);  // This and next line moves the disk's motor
-  digitalWrite(motorData[DISK].CLOCK_PIN, !directions[0]);
-  digitalWrite(motorData[CROSS].COUNTER_PIN, directions[1]);  // This and net line moves the cross's motor
-  digitalWrite(motorData[CROSS].CLOCK_PIN, !directions[1]);
+  for (int i = 0; i < 2; i++){
+    digitalWrite(motorData[1 - i].COUNTER_PIN, directions[1 - i]);
+    digitalWrite(motorData[1 - i].CLOCK_PIN, !directions[1 - i]);
+  }
 }
 
 // Function that moves the disk and cross motor simultaneously
 void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross) {
   int motors[3] = {DISK, CROSS, MOTOR_INDEXES_END_FLAG};  // Creating a list containg the motor and the 0xFF flag
-  uint8_t directions[2] = {rotationDirectionDisk, rotationDirectionCross};
+  uint8_t directions[2] = {rotationDirectionDisk, rotationDirectionCross};  // Creating a list containing the directions in order
   // Move the motors away from the magnets or else the halls will detect it and the rotation won't be done
   enableMotorSIM(directions);
   delay(rotationDelay);
   // Now it can start rotating until a magnet is found from the hall
-  while (true){
-    enableMotorSIM(directions);  // Keeps to moves both of them simultaneously
-    // If the disk's hall detects a magnet then stops the disk and keep moving the cross until it's hall also detects a magnet
-    if(!(hallCheck(motorData[DISK].HALL))){
-      turnMotorsOff((const int[]){DISK, MOTOR_INDEXES_END_FLAG});
-      while (hallCheck(motorData[CROSS].HALL)) {
-        digitalWrite(motorData[CROSS].COUNTER_PIN, rotationDirectionCross);
-        digitalWrite(motorData[CROSS].CLOCK_PIN, !rotationDirectionCross);
+  bool exitLoop = false;  // Boolean for exiting the loop when both the halls detects a magnet
+  while (!exitLoop) {
+    enableMotorSIM(directions);  // Move both of them until on the halls detect a magnet
+    // Check for magnets and handle motor stops
+    for (int i = 0; i < 2; i++) {
+      if (!hallCheck(motorData[i].HALL)) {  // Checks for both the cross and the disk, based on the i value
+        const int motorToTurnOff[] = {i, MOTOR_INDEXES_END_FLAG};  // Turns off the motor, which hall found a magnet
+        turnMotorsOff(motorToTurnOff);
+        // Rotate the other motor until its magnet is detected
+        while (hallCheck(motorData[1 - i].HALL)) {
+          digitalWrite(motorData[1 - i].COUNTER_PIN, directions[1 - i]);
+          digitalWrite(motorData[1 - i].CLOCK_PIN, !directions[1 - i]);
+        }
+        exitLoop = true;  // Exit the while loop after both motors are aligned with magnets
+        break;  // Exit the for loop
       }
-      break;
     }
-    if(!(hallCheck(motorData[CROSS].HALL))){
-      turnMotorsOff((const int[]){CROSS, MOTOR_INDEXES_END_FLAG});
-      while (hallCheck(motorData[DISK].HALL)) {
-        digitalWrite(motorData[DISK].COUNTER_PIN, rotationDirectionDisk);
-        digitalWrite(motorData[DISK].CLOCK_PIN, !rotationDirectionDisk);
-      }
-      break;
-    }
-    turnMotorsOff(motors);
   }
+  turnMotorsOff(motors);  // Turn off all the motors
 }
 
 // This function is used for dispose both the TRASH_PLASTIC and TRASH_METAL.
@@ -168,13 +171,10 @@ void throwPaper(){
   if(paperAlreadyPresent){
     rotateMotorSIM(CLOCKWISE, COUNTER_CLOCKWISE);  // Simultaneously rotates both the disk's motor and the cross's motor
     resetMotorOffset(DISK, COUNTER_CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
-    delay(serialDelay);
     rotateMotor(CROSS, COUNTER_CLOCKWISE, 1);  // Now the cross rotates again to dispose also the second-arrived waste
     delay(serialDelay);
     rotateMotor(CROSS, CLOCKWISE, 1);  // Once both the new waste and the previous waste have been thrown away, the cross starts to go back in place
-    delay(serialDelay);
     rotateMotorSIM(COUNTER_CLOCKWISE, CLOCKWISE); // Simultaneously rotates both the disk's motor and the cross's motor
-    delay(serialDelay);
     resetMotorOffset(CROSS, COUNTER_CLOCKWISE, crossOffsetDelay);  // Adjusting the cross's offset
     resetMotorOffset(DISK, CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
     paperAlreadyPresent = false;  // Now this becomes true because both wastes have been disposed
@@ -189,7 +189,7 @@ void throwPaper(){
 // RPI4 COMMUNICATION
 // Function to verify that the incoming data from the Rpi4 is a valid number
 bool isValidTrashType(TrashType trashToVerify) {
-    return (trashToVerify >= TRASH_NONE && trashToVerify <= TRASH_PAPER) || trashToVerify == TRASH_INCOMING;
+  return (trashToVerify > TRASH_NONE && trashToVerify <= TRASH_PAPER) || trashToVerify == TRASH_INCOMING;
 }
 
 /*
