@@ -4,7 +4,7 @@
 // SETUP
 void setup() {
   // SERIAL INITIALIZATION
-  delay(500);
+  delay(serialDelay);
   Serial.begin(115200);
   delay(serialDelay);
 

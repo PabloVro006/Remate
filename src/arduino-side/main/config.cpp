@@ -1,6 +1,29 @@
 // Include config header file
 #include "config.h"
 
+// DEFINE VARIABLES
+const int HALL_DISK = A0;
+const int HALL_CROSS = A1;
+ul serialDelay = 20;
+ul rotationDelay = 1000;
+ul crossOffsetDelay = 150;
+ul diskOffsetDelay = 95;
+const int hallThresholdLow = 400;
+const int hallThresholdHigh = 550;
+const int feedbackOk = 42;
+ul paddleGoingInterval = 90;
+ul paddleNotGoingInterval = 1000;
+ul trashIncomingTimeout = 5000;
+ul previousMillis = 0;
+bool paperAlreadyPresent = false;
+bool isThrowing = false;
+TrashType trash = TRASH_NONE;
+const MotorData motorData[] = {
+  {COUNTER_DISK_PIN, CLOCK_DISK_PIN, HALL_DISK},
+  {COUNTER_CROSS_PIN, CLOCK_CROSS_PIN, HALL_CROSS}
+};
+PaddleMotorStruct paddleMotorStruct = {1, 1};
+
 // DEFINE FUNCTIONS
 // Reads the output values of the hall passed in the parameter
 bool hallCheck(int hall) {
@@ -55,7 +78,7 @@ void resetOffset(uint8_t motorIndex, uint8_t rotationDirection, ul movementDelay
   delay(200);
   digitalWrite(motor.COUNTER_PIN, rotationDirection);
   digitalWrite(motor.CLOCK_PIN, !rotationDirection);
-  delay(movementDelay);  // 150
+  delay(movementDelay);
   turnMotorsOff(motors);
 }
 
@@ -125,8 +148,7 @@ void throwPOM(TrashType trashType){
   rotateMotor(motorIndex, rotationDirection, 1);
   delay(serialDelay);
   rotateMotor(motorIndex, !rotationDirection, 1);
-  uint8_t offsetDelay = (trashType == TRASH_PLASTIC) ? 150 : 95;
-  resetOffset(motorIndex, rotationDirection, offsetDelay);
+  resetOffset(motorIndex, rotationDirection, (trashType == TRASH_PLASTIC ? crossOffsetDelay : diskOffsetDelay));
   trash = TRASH_NONE;
 }
 
@@ -145,6 +167,7 @@ void throwPaper(){
     paperAlreadyPresent = false;
   } else {
     rotateMotor(CROSS, COUNTER_CLOCKWISE, 1);
+    resetOffset(CROSS, CLOCKWISE, crossOffsetDelay);
     paperAlreadyPresent = true;
   }
   trash = TRASH_NONE;
