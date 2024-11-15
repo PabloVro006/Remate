@@ -80,6 +80,7 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times); 
 void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross);  // Rotate simultaneously the cross's and the disk's motor
 void throwPOM(TrashType trashType);                                      // Throw POM (plastic or metal)
 void throwPaper();                                                       // Function to handle paper trashes 
+bool isValidTrashType(TrashType trashToVerify);                          // Verifies that the incoming data from the Rpi4 is a valid number
 int getTrashFromPi();                                                    // Get the Serial input from Rpi4
 void sendFeedbackToPi(int feedbackNumber);                               // Send the Serial feedback to Rpi4
 
