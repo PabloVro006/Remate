@@ -3,7 +3,7 @@
 
 // DEFINE VARIABLES
 ul serialDelay = 20;
-ul rotationDelay = 1000;
+ul rotationDelay = 900;
 ul crossOffsetDelay = 150;
 ul diskOffsetDelay = 95;
 const int hallThresholdLow = 400;
@@ -168,9 +168,13 @@ void throwPaper(){
   if(paperAlreadyPresent){
     rotateMotorSIM(CLOCKWISE, COUNTER_CLOCKWISE);  // Simultaneously rotates both the disk's motor and the cross's motor
     resetMotorOffset(DISK, COUNTER_CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
+    delay(serialDelay);
     rotateMotor(CROSS, COUNTER_CLOCKWISE, 1);  // Now the cross rotates again to dispose also the second-arrived waste
+    delay(serialDelay);
     rotateMotor(CROSS, CLOCKWISE, 1);  // Once both the new waste and the previous waste have been thrown away, the cross starts to go back in place
+    delay(serialDelay);
     rotateMotorSIM(COUNTER_CLOCKWISE, CLOCKWISE); // Simultaneously rotates both the disk's motor and the cross's motor
+    delay(serialDelay);
     resetMotorOffset(CROSS, COUNTER_CLOCKWISE, crossOffsetDelay);  // Adjusting the cross's offset
     resetMotorOffset(DISK, CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
     paperAlreadyPresent = false;  // Now this becomes true because both wastes have been disposed
