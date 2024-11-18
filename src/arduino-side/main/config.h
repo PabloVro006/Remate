@@ -29,9 +29,9 @@ typedef unsigned long ul;
 // Enum for trash types
 enum TrashType {
   TRASH_NONE = 0,
-  TRASH_METAL = 1,
-  TRASH_PLASTIC = 2,
-  TRASH_PAPER = 3,
+  TRASH_METAL = 2,
+  TRASH_PLASTIC = 3,
+  TRASH_PAPER = 1,
   TRASH_INCOMING = 9,  // 9 is a flag indicating that something has been detected from the Rpi4, but it's not defined yet
 };
 

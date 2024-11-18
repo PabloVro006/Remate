@@ -189,7 +189,7 @@ void throwPaper(){
 // RPI4 COMMUNICATION
 // Function to verify that the incoming data from the Rpi4 is a valid number
 bool isValidTrashType(TrashType trashToVerify) {
-  return (trashToVerify > TRASH_NONE && trashToVerify <= TRASH_PAPER) || trashToVerify == TRASH_INCOMING;
+  return (trashToVerify > TRASH_NONE && trashToVerify <= TRASH_PLASTIC) || trashToVerify == TRASH_INCOMING;
 }
 
 /*
