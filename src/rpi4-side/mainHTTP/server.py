@@ -75,7 +75,7 @@ class StreamingHandler(SimpleHTTPRequestHandler):
         field_data = self.rfile.read(length).decode('utf-8')
         data = [int(float(i.split('=')[1])) for i in field_data.split('&')]
         fast_stop = int(data[5])
-        print('Dati ricevuti dal client: ', data)
+        #print('Dati ricevuti dal client: ', data)
         
         # Saves the predicted class
         if data[0] != '0.0':
@@ -116,15 +116,15 @@ class ThreadingServer(ThreadingHTTPServer):
             
             sleep(0.01)
             if self.serial.in_waiting > 0:
-                print("ENTERED CONDITION")
+                #print("ENTERED CONDITION")
                 received_data = self.serial.readline().decode('utf-8').strip()
-                print(f"Received: {received_data}")
+                #print(f"Received: {received_data}")
                 if received_data == "42":
                     stop_condition = 0
 def stream():
     global class_predicted, stop_condition
     stop_condition = 0
-    ser = serial.Serial('/dev/ttyACM1', 115200, timeout=1.0) # controlla il timeout
+    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1.0) # controlla il timeout
     sleep(2)
     ser.reset_input_buffer()
     

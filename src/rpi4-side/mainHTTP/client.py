@@ -2,16 +2,13 @@ import cv2
 import requests
 import numpy as np
 from ultralytics import YOLO
-import json
 from collections import deque
-from time import sleep
 
 detection_model = YOLO('detection.pt')
-classification_model = YOLO('classification.pt')
 streak = deque(maxlen=10)
 
 # URL of the MJPEG stream (you need to adjust this to your actual stream URL)
-url = 'http://192.168.71.24:8000/stream.mjpg'
+url = 'http://192.168.84.24:8000/stream.mjpg'
 
 # Open a connection to the MJPEG stream
 get_response = requests.get(url, stream=True)
@@ -72,7 +69,6 @@ if get_response.status_code == 200:
                 streak.append(int(predicted_class))
 
             if predicted_class != 0 and len(streak) == 1:
-                print(' AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
                 print(streak)
                 detection_dict = {'class' : float(streak[0]), 
                 'xmin': best_box['xmin'],
@@ -95,15 +91,6 @@ if get_response.status_code == 200:
                 }
                 streak.clear()
                 post_response = requests.post(url, data=detection_dict)
-
-            '''
-            if post_response.status_code == 200:
-                continue
-            else: 
-                print(post_response.status_code)
-                break
-            '''
-
 
 else:
     print(f"Failed to connect to the stream: {get_response.status_code}")
