@@ -8,13 +8,16 @@ from collections import deque
 detection_model = YOLO('detection.pt')
 streak = deque(maxlen=10)
 
+"""
+This function creates and returns a dictionary to be sent as data through an http request
+"""
 def request_dict(class_id, best_box={'xmin': 0, 'ymin': 0, 'xmax': 0, 'ymax': 0}, fast_stop=0):
-    detection_dict = {'class' : class_id, 
-                'xmin': best_box['xmin'],
-                'ymin': best_box['ymin'],
-                'xmax': best_box['xmax'],
-                'ymax': best_box['ymax'],
-                'fast': fast_stop
+    detection_dict = {'class' : class_id, # Class predicted by the model
+                'xmin': best_box['xmin'], # Lowest x-coordinate of the box
+                'ymin': best_box['ymin'], # Lowest y-coordinate of the box
+                'xmax': best_box['xmax'], # Highest x-coordinate of the box
+                'ymax': best_box['ymax'], # Highest y-coordinate of the box
+                'fast': fast_stop # Condition to immediately stop the paddle
                 }
     
     return detection_dict
@@ -86,35 +89,22 @@ if get_response.status_code == 200:
             if predicted_class != 0:
                 streak.append(int(predicted_class))
 
-
             # Checks if it is the first prediction
             if predicted_class != 0 and len(streak) == 1:
                 # Saves data in a dictionary
-                detection_dict = {'class' : float(streak[0]), 
-                'xmin': best_box['xmin'],
-                'ymin': best_box['ymin'],
-                'xmax': best_box['xmax'],
-                'ymax': best_box['ymax'],
-                'fast': 1 # Fast stop condition
-                }
+                dict = request_dict(class_id=float(streak[0]), best_box=best_box, fast_stop=1)
                 # Sends a post request with the data
-                post_response = requests.post(url, data=detection_dict)
+                post_response = requests.post(url, data=dict)
                 
 
             # Checks if the last 10 predictions are all the same
             if predicted_class != 0 and len(streak) == 10 and all(streak[i] == streak[0] for i in range(len(streak))):
-                #Saves data in a dictionary 
-                detection_dict = {'class' : float(streak[0]), 
-                'xmin': best_box['xmin'],
-                'ymin': best_box['ymin'],
-                'xmax': best_box['xmax'],
-                'ymax': best_box['ymax'],
-                'fast': 0 # Fast stop condition
-                }
+                # Saves data in a dictionary 
+                dict = request_dict(class_id=float(streak[0]), best_box=best_box)
                 # Clears the streak deque
                 streak.clear()
                 # Sends a post request with the data
-                post_response = requests.post(url, data=detection_dict)
+                post_response = requests.post(url, data=dict)
 
 else:
     print(f"Failed to connect to the stream: {get_response.status_code}")
