@@ -1,0 +1,13 @@
+[Unit]
+Description=Display IP Address on LCD
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /home/pi/display_ip.sh
+StandardOutput=null
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
