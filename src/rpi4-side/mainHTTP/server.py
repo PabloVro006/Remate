@@ -47,7 +47,7 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.send_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
             self.end_headers()
             try:
-                # Endless stream
+                # Run the endless stream
                 while True:
                     with self.frames_buffer.condition:
                         # Wait for a new frame
@@ -76,7 +76,6 @@ class StreamingHandler(SimpleHTTPRequestHandler):
         field_data = self.rfile.read(length).decode('utf-8')
         data = [int(float(i.split('=')[1])) for i in field_data.split('&')]
         fast_stop = int(data[5])
-        #print('Dati ricevuti dal client: ', data)
         
         # Saves the predicted class
         if data[0] != '0.0':
@@ -130,8 +129,7 @@ class ThreadingServer(ThreadingHTTPServer):
                 received_data = self.serial.readline().decode('utf-8').strip()
                 
                 # If the Arduino said so, start getting new predictions
-                if received_data == "42":
-                    stop_condition = 0
+                if received_data == "42": stop_condition = 0
 
 
 """
@@ -158,7 +156,6 @@ def stream():
             frame_buffer = FrameBuffer()
             camera.start_recording(frame_buffer, format='mjpeg')
 
-            # Run server
             try:
                 address = ('', 8000)
                 # Define a handler to manage incoming streaming requests
