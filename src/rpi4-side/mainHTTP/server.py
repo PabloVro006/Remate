@@ -130,7 +130,7 @@ def stream():
     
     if ser.isOpen():
         with picamera.PiCamera(framerate=20) as camera:
-            camera.resolution = (512, 512)
+            camera.resolution = (704, 512)
 
             # Create and stream buffer
             frame_buffer = FrameBuffer()

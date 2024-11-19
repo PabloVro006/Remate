@@ -8,7 +8,7 @@ detection_model = YOLO('detection.pt')
 streak = deque(maxlen=10)
 
 # URL of the MJPEG stream (you need to adjust this to your actual stream URL)
-url = 'http://192.168.84.24:8000/stream.mjpg'
+url = 'http://192.168.1.79:8000/stream.mjpg'
 
 # Open a connection to the MJPEG stream
 get_response = requests.get(url, stream=True)
