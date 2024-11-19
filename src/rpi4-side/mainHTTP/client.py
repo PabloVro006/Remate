@@ -4,10 +4,25 @@ import numpy as np
 from ultralytics import YOLO
 from collections import deque
 
+# Model and streak deque initialization
 detection_model = YOLO('detection.pt')
 streak = deque(maxlen=10)
 
-# URL of the MJPEG stream (you need to adjust this to your actual stream URL)
+"""
+This function creates and returns a dictionary to be sent as data through an http request
+"""
+def request_dict(class_id, best_box={'xmin': 0, 'ymin': 0, 'xmax': 0, 'ymax': 0}, fast_stop=0):
+    detection_dict = {'class' : class_id, # Class predicted by the model
+                'xmin': best_box['xmin'], # Lowest x-coordinate of the box
+                'ymin': best_box['ymin'], # Lowest y-coordinate of the box
+                'xmax': best_box['xmax'], # Highest x-coordinate of the box
+                'ymax': best_box['ymax'], # Highest y-coordinate of the box
+                'fast': fast_stop # Condition to immediately stop the paddle
+                }
+    
+    return detection_dict
+
+# URL of the MJPEG stream
 url = 'http://192.168.1.79:8000/stream.mjpg'
 
 # Open a connection to the MJPEG stream
@@ -15,7 +30,9 @@ get_response = requests.get(url, stream=True)
 
 # Ensure the connection was successful
 if get_response.status_code == 200:
-    byte_data = b''  # Buffer to hold the incoming image bytes
+    
+    # Setup buffer to hold the incoming image bytes
+    byte_data = b''  
     
     for chunk in get_response.iter_content(chunk_size=4096):
         byte_data += chunk
@@ -27,17 +44,17 @@ if get_response.status_code == 200:
         if start != -1 and end != -1:
             # Extract the JPEG frame
             jpg_frame = byte_data[start:end+2]
-            byte_data = byte_data[end+2:]  # Remove the processed frame from buffer
+            # Remove the processed frame from buffer
+            byte_data = byte_data[end+2:]
 
-            # Decode the JPEG frame to an image
+            # Decode the JPEG frame to a opencv image
             array = np.frombuffer(jpg_frame, dtype=np.uint8)        
             image = cv2.imdecode(array, cv2.IMREAD_COLOR)
 
-            #resized = cv2.resize(image, (224, 224))
-
+            # Run the model inference on the image
             detection = detection_model(image)[0]
 
-            # PLOT
+            # UNCOMMENT FOR PLOTTING THE PREDICTIONS
             '''
             for data in detection.boxes.data.tolist():
                 if float(data[4]) < 0.70:
@@ -55,45 +72,42 @@ if get_response.status_code == 200:
             biggest = 0
             predicted_class = 0.0
 
+            # For each prediction, 
             for data in detection.boxes.data.tolist():
                 class_id = data[5]
                 area = (int(data[2]) - int(data[0])) * (int(data[3]) - int(data[1]))
-
+                
+                # Founds the waste item with the biggest box area
                 if area > biggest: 
                     biggest = area
+                    # Saves the class of the waste item
                     predicted_class = class_id + 1
+                    # Saves box data
                     best_box = {'xmin': int(data[0]), 'ymin': int(data[1]), 'xmax': int(data[2]), 'ymax': int(data[3])}
 
-                
+            # Appends the prediction to the streak deque    
             if predicted_class != 0:
                 streak.append(int(predicted_class))
 
+            # Checks if it is the first prediction
             if predicted_class != 0 and len(streak) == 1:
-                print(streak)
-                detection_dict = {'class' : float(streak[0]), 
-                'xmin': best_box['xmin'],
-                'ymin': best_box['ymin'],
-                'xmax': best_box['xmax'],
-                'ymax': best_box['ymax'],
-                'fast': 1
-                }
-                post_response = requests.post(url, data=detection_dict)
+                # Saves data in a dictionary
+                dict = request_dict(class_id=float(streak[0]), best_box=best_box, fast_stop=1)
+                # Sends a post request with the data
+                post_response = requests.post(url, data=dict)
+                
 
-
+            # Checks if the last 10 predictions are all the same
             if predicted_class != 0 and len(streak) == 10 and all(streak[i] == streak[0] for i in range(len(streak))):
-                print(streak)
-                detection_dict = {'class' : float(streak[0]), 
-                'xmin': best_box['xmin'],
-                'ymin': best_box['ymin'],
-                'xmax': best_box['xmax'],
-                'ymax': best_box['ymax'],
-                'fast': 0
-                }
+                # Saves data in a dictionary 
+                dict = request_dict(class_id=float(streak[0]), best_box=best_box)
+                # Clears the streak deque
                 streak.clear()
-                post_response = requests.post(url, data=detection_dict)
+                # Sends a post request with the data
+                post_response = requests.post(url, data=dict)
 
 else:
     print(f"Failed to connect to the stream: {get_response.status_code}")
 
-# Release resources
-#cv2.destroyAllWindows()
+# UNCOMMENT FOR PLOTTING THE PREDICTIONS
+# cv2.destroyAllWindows()
