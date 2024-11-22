@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOGFILE="/home/pi/display_ip_debug.log"
+LOGFILE="/home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/display/test_display.log"
 exec > "$LOGFILE" 2>&1
 
 echo "Script started at $(date)"
@@ -12,7 +12,7 @@ LCD_DEVICE="/dev/i2c-1"
 # Function to send commands
 lcd_command() {
     echo "Sending command: $1"
-    i2cset -y 1 $I2C_ADDR $1
+    /usr/sbin/i2cset -y 1 $I2C_ADDR $1
     sleep 0.1  # Add a small delay
 }
 
