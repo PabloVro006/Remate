@@ -1,0 +1,15 @@
+[Unit]
+Description=Server Python Code
+After=multi-user.target network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3.9 /home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/mainHTTP/server.py
+WorkingDirectory=/home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/mainHTTP
+StandardOutput=null
+StandardError=journal
+Restart=always
+User=pablo
+
+[Install]
+WantedBy=multi-user.target
