@@ -5,7 +5,6 @@ Wants=network-online.target
 
 [Service]
 ExecStart=/usr/bin/python3.9 /home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/display/display_ip.py
-ExecStartPre=/bin/sleep 300
 WorkingDirectory=/home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/display
 StandardOutput=null
 StandardError=journal
