@@ -7,10 +7,10 @@ import serial
 from time import sleep
 import RPi.GPIO as GPIO
 
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
-GPIO.setup(4, GPIO.OUT)
-GPIO.output(4, GPIO.LOW)
+GPIO.setup(7, GPIO.OUT)
+GPIO.output(7, GPIO.LOW)
 
 '''
 FrameBuffer is a synchronized buffer which gets each frame and notifies to all waiting clients.
@@ -178,5 +178,5 @@ def stream():
 
 if __name__ == "__main__":
     sleep(360)
-    GPIO.output(4, GPIO.HIGH)
+    GPIO.output(7, GPIO.HIGH)
     stream()
