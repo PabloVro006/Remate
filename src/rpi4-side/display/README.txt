@@ -5,4 +5,4 @@ copy the display.service in
 
 sudo systemctl daemon-reload
 sudo systemctl enable display.service
-sudo systemctl start display_ip.service
+sudo systemctl start display.service

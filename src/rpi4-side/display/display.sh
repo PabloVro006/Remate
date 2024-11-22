@@ -6,7 +6,7 @@ LCD_DEVICE="/dev/i2c-1"
 
 # Function to send commands to the LCD
 lcd_command() {
-    i2cset -y 1 $I2C_ADDR $1
+    /usr/sbin/i2cset -y 1 $I2C_ADDR $1
 }
 
 lcd_write_string() {
