@@ -9,8 +9,8 @@ import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-GPIO.setup(18, GPIO.OUT)
-GPIO.output(18, GPIO.LOW)
+GPIO.setup(4, GPIO.OUT)
+GPIO.output(4, GPIO.LOW)
 
 '''
 FrameBuffer is a synchronized buffer which gets each frame and notifies to all waiting clients.
