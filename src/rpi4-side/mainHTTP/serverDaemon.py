@@ -173,9 +173,10 @@ def stream():
                 server.serve_forever()
 
             finally:
+                GPIO.output(4, GPIO.LOW)
                 camera.stop_recording()
 
 if __name__ == "__main__":
     sleep(360)
-    GPIO.output(18, GPIO.HIGH)
+    GPIO.output(4, GPIO.HIGH)
     stream()

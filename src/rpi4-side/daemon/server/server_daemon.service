@@ -4,7 +4,7 @@ After=multi-user.target network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/bin/python3.9 /home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/mainHTTP/server.py
+ExecStart=/usr/bin/python3.9 /home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/mainHTTP/serverDaemon.py
 WorkingDirectory=/home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/mainHTTP
 StandardOutput=null
 StandardError=journal
