@@ -3,6 +3,12 @@ import requests
 import numpy as np
 from ultralytics import YOLO
 from collections import deque
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--ip", help="Insert the server's ip address")
+args = parser.parse_args()
+print(args.ip)
 
 # Model and streak deque initialization
 detection_model = YOLO('detection.pt')
@@ -23,7 +29,7 @@ def request_dict(class_id, best_box={'xmin': 0, 'ymin': 0, 'xmax': 0, 'ymax': 0}
     return detection_dict
 
 # URL of the MJPEG stream
-url = 'http://192.168.1.79:8000/stream.mjpg'
+url = f'http://{args.ip}:8000/stream.mjpg'
 
 # Open a connection to the MJPEG stream
 get_response = requests.get(url, stream=True)
