@@ -1,0 +1,16 @@
+[Unit]
+Description=Display IP Address on LCD
+After=multi-user.target network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3.9 /home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/display/display_ip.py
+ExecStartPre=/bin/sleep 300
+WorkingDirectory=/home/pablo/Desktop/Code2k24/GitHub/Remate/src/rpi4-side/display
+StandardOutput=null
+StandardError=journal
+Restart=always
+User=pablo
+
+[Install]
+WantedBy=multi-user.target

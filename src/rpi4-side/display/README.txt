@@ -1,8 +1,8 @@
 install i2c-tools
 
-copy the display.service in
-/etc/systemd/system/display.service
+copy the display_ip.service in
+/etc/systemd/system/display_ip.service
 
 sudo systemctl daemon-reload
-sudo systemctl enable display.service
-sudo systemctl start display.service
+sudo systemctl enable display_ip.service
+sudo systemctl start display_ip.service
