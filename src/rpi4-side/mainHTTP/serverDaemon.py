@@ -177,6 +177,6 @@ def stream():
                 camera.stop_recording()
 
 if __name__ == "__main__":
-    sleep(360)
+    sleep(120)
     GPIO.output(7, GPIO.HIGH)
     stream()
