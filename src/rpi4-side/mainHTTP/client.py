@@ -83,9 +83,9 @@ if get_response.status_code == 200:
 
             if len(c) > 1:
                 if  c.most_common(1) != c.most_common(2):
-                    predicted_class = c.most_common(1) + 1
+                    predicted_class = int(c.most_common(1)) + 1
                 else: predicted_class = 4
-            else: predicted_class = c.most_common(1) + 1
+            else: predicted_class = int(c.most_common(1)) + 1
 
             # Appends the prediction to the streak deque    
             if predicted_class != 0:
