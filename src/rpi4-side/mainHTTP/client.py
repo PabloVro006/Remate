@@ -2,7 +2,7 @@ import cv2
 import requests
 import numpy as np
 from ultralytics import YOLO
-from collections import deque
+from collections import deque, Counter
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -17,12 +17,8 @@ streak = deque(maxlen=10)
 """
 This function creates and returns a dictionary to be sent as data through an http request
 """
-def request_dict(class_id, best_box={'xmin': 0, 'ymin': 0, 'xmax': 0, 'ymax': 0}, fast_stop=0):
+def request_dict(class_id, fast_stop=0):
     detection_dict = {'class' : class_id, # Class predicted by the model
-                'xmin': best_box['xmin'], # Lowest x-coordinate of the box
-                'ymin': best_box['ymin'], # Lowest y-coordinate of the box
-                'xmax': best_box['xmax'], # Highest x-coordinate of the box
-                'ymax': best_box['ymax'], # Highest y-coordinate of the box
                 'fast': fast_stop # Condition to immediately stop the paddle
                 }
     
@@ -75,21 +71,21 @@ if get_response.status_code == 200:
                 break
             '''
 
-            biggest = 0
             predicted_class = 0.0
+            boxes_list = []
 
             # For each prediction, 
             for data in detection.boxes.data.tolist():
                 class_id = data[5]
-                area = (int(data[2]) - int(data[0])) * (int(data[3]) - int(data[1]))
-                
-                # Founds the waste item with the biggest box area
-                if area > biggest: 
-                    biggest = area
-                    # Saves the class of the waste item
-                    predicted_class = class_id + 1
-                    # Saves box data
-                    best_box = {'xmin': int(data[0]), 'ymin': int(data[1]), 'xmax': int(data[2]), 'ymax': int(data[3])}
+                boxes_list.append(class_id)
+            
+            c = Counter(boxes_list)
+
+            if len(c) > 1:
+                if  c.most_common(1) != c.most_common(2):
+                    predicted_class = c.most_common(1) + 1
+                else: predicted_class = 4
+            else: predicted_class = c.most_common(1) + 1
 
             # Appends the prediction to the streak deque    
             if predicted_class != 0:
@@ -98,7 +94,7 @@ if get_response.status_code == 200:
             # Checks if it is the first prediction
             if predicted_class != 0 and len(streak) == 1:
                 # Saves data in a dictionary
-                dict = request_dict(class_id=float(streak[0]), best_box=best_box, fast_stop=1)
+                dict = request_dict(class_id=float(streak[0]), fast_stop=1)
                 # Sends a post request with the data
                 post_response = requests.post(url, data=dict)
                 
@@ -106,7 +102,7 @@ if get_response.status_code == 200:
             # Checks if the last 10 predictions are all the same
             if predicted_class != 0 and len(streak) == 10 and all(streak[i] == streak[0] for i in range(len(streak))):
                 # Saves data in a dictionary 
-                dict = request_dict(class_id=float(streak[0]), best_box=best_box)
+                dict = request_dict(class_id=float(streak[0]))
                 # Clears the streak deque
                 streak.clear()
                 # Sends a post request with the data
