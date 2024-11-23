@@ -187,7 +187,7 @@ void throwPaper(){
 }
 
 /*
- When more than one type of trash falls then they all get disposed in a particular bin
+ When more than one type of trash falls then they all get disposed in a particular bi
 */
 void throwUnsorted(){
 	rotateMotorSIM(CLOCKWISE, COUNTER_CLOCKWISE, 1);  // Simultaneously rotates both the disk's motor and the cross's motor
