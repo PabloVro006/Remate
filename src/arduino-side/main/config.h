@@ -32,6 +32,7 @@ enum TrashType {
   TRASH_PAPER = 1,
   TRASH_METAL = 2,
   TRASH_PLASTIC = 3,
+  TRASH_UNSORTED = 4,
   TRASH_INCOMING = 9,  // 9 is a flag indicating that something has been detected from the Rpi4, but it's not defined yet
 };
 
@@ -80,7 +81,8 @@ void rotateMotor(uint8_t motorIndex, uint8_t rotationDirection, uint8_t times); 
 void enableMotorSIM(const uint8_t directions[]);                         // Enable both the disk's motor and the cross's motor simultaneously
 void rotateMotorSIM(uint8_t rotationDirectionDisk, uint8_t rotationDirectionCross);  // Rotate simultaneously the cross's and the disk's motor
 void throwPOM(TrashType trashType);                                      // Throw POM (plastic or metal)
-void throwPaper();                                                       // Function to handle paper trashes 
+void throwPaper();                                                       // Function to handle paper trashes
+void throwUnsorted();                                                    // Throw all the trashes in the unsorted bin
 bool isValidTrashType(TrashType trashToVerify);                          // Verifies that the incoming data from the Rpi4 is a valid number
 int getTrashFromPi();                                                    // Get the Serial input from Rpi4
 void sendFeedbackToPi(int feedbackNumber);                               // Send the Serial feedback to Rpi4

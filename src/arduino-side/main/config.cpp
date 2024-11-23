@@ -186,6 +186,21 @@ void throwPaper(){
   trash = TRASH_NONE;
 }
 
+/*
+ When more than one type of trashes falls then they all get disposed in a particular bin
+*/
+void throwUnsorted(){
+	rotateMotorSIM(CLOCKWISE, COUNTER_CLOCKWISE, 1);  // Simultaneously rotates both the disk's motor and the cross's motor
+	resetMotorOffset(CROSS, CLOCKWISE, crossOffsetDelay);  // Adjusting the cross's offset
+	rotateMotor(DISK, CLOCKLWISE, 1);
+	resetMotorOffset(DISK, COUNTER_CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
+	delay(serialDelay);
+	rotateMotor(DISK, CLOCKLWISE, 1);  //
+	rotateMotorSIM(COUNTER_CLOCKWISE, CLOCKWISE, 1);  // Simultaneously rotates both the disk's motor and the cross's motor
+	resetOffset(CROSS, COUNTER_CLOCKWISE, crossOffsetDelay);  // Adjusting the cross's offset
+	resetOffset(DISK, CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
+}
+
 // RPI4 COMMUNICATION
 // Function to verify that the incoming data from the Rpi4 is a valid number
 bool isValidTrashType(TrashType trashToVerify) {

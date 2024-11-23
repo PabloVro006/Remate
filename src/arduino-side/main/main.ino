@@ -56,8 +56,10 @@ void loop() {
       isThrowing = true;  // This is useful for stopping the data reception from the Rpi4
       if(trash == TRASH_METAL || trash == TRASH_PLASTIC){
         throwPOM(trash);
-      } else {  // At this point trash must be TRASH_PAPER
+      } else if(trash == TRASH_PAPER){  // At this point trash must be TRASH_PAPER
         throwPaper();
+      } else {
+        throwUnsorted();
       }
       // Send feedback to Rpi4 and start moving the paddle again
       sendFeedbackToPi(feedbackOk);
