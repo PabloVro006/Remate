@@ -81,7 +81,7 @@ class StreamingHandler(SimpleHTTPRequestHandler):
         # Reads the data
         field_data = self.rfile.read(length).decode('utf-8')
         data = [int(float(i.split('=')[1])) for i in field_data.split('&')]
-        fast_stop = int(data[5])
+        fast_stop = int(data[1])
 
         # Saves the predicted class
         if data[0] != '0.0':

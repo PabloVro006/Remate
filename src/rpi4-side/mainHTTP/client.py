@@ -78,14 +78,14 @@ if get_response.status_code == 200:
             for data in detection.boxes.data.tolist():
                 class_id = data[5]
                 boxes_list.append(class_id)
-            
+                            
             c = Counter(boxes_list)
 
             if len(c) > 1:
-                if  c.most_common(1) != c.most_common(2):
-                    predicted_class = int(c.most_common(1)) + 1
+                if c.most_common()[0][1] != c.most_common()[1][1]:
+                    predicted_class = int(c.most_common(1)[0]) + 1
                 else: predicted_class = 4
-            else: predicted_class = int(c.most_common(1)) + 1
+            else: predicted_class = int(c.most_common(1)[0]) + 1
 
             # Appends the prediction to the streak deque    
             if predicted_class != 0:
