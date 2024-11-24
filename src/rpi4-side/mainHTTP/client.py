@@ -8,7 +8,6 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--ip", help="Insert the server's ip address")
 args = parser.parse_args()
-print(args.ip)
 
 # Model and streak deque initialization
 detection_model = YOLO('detection.pt')
@@ -71,7 +70,7 @@ if get_response.status_code == 200:
                 break
             '''
 
-            predicted_class = 0.0
+            predicted_class = 0
             boxes_list = []
 
             # For each prediction, 
@@ -80,9 +79,9 @@ if get_response.status_code == 200:
                 boxes_list.append(class_id)
                             
             c = Counter(boxes_list)
-            predicted_class = c.most_common()[0][0] + 1
+            
+            # if (c): predicted_class = c.most_common()[0][0] + 1
 
-            '''
             if (c):
                 if len(c) > 1:
                     if c.most_common()[0][1] != c.most_common()[1][1]:
@@ -91,7 +90,6 @@ if get_response.status_code == 200:
                 else: predicted_class = int(c.most_common()[0][0]) + 1
 
             print(predicted_class)
-            '''
 
             # Appends the prediction to the streak deque    
             if predicted_class != 0:
