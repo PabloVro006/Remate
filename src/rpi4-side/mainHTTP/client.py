@@ -80,8 +80,9 @@ if get_response.status_code == 200:
                             
             c = Counter(boxes_list)
             
-            # if (c): predicted_class = c.most_common()[0][0] + 1
+            if (c): predicted_class = c.most_common()[0][0] + 1
 
+            '''
             if (c):
                 if len(c) > 1:
                     if c.most_common()[0][1] != c.most_common()[1][1]:
@@ -90,6 +91,7 @@ if get_response.status_code == 200:
                 else: predicted_class = int(c.most_common()[0][0]) + 1
 
             print(predicted_class)
+            '''
 
             # Appends the prediction to the streak deque    
             if predicted_class != 0:
