@@ -1,0 +1,70 @@
+{
+  "C_Cpp_Runner.cCompilerPath": "/Users/pablo/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+  "C_Cpp_Runner.cppCompilerPath": "/Users/pablo/.platformio/packages/toolchain-atmelavr/bin/avr-g++",
+  "C_Cpp_Runner.debuggerPath": "/Users/pablo/.platformio/packages/toolchain-atmelavr/bin/avr-gdb",
+  "C_Cpp_Runner.cStandard": "gnu11",
+  "C_Cpp_Runner.cppStandard": "gnu++11",
+  "C_Cpp_Runner.msvcBatchPath": "C:/Program Files/Microsoft Visual Studio/VR_NR/Community/VC/Auxiliary/Build/vcvarsall.bat",
+  "C_Cpp_Runner.useMsvc": false,
+  "C_Cpp_Runner.warnings": [
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wshadow",
+    "-Wformat=2",
+    "-Wcast-align",
+    "-Wconversion",
+    "-Wsign-conversion",
+    "-Wnull-dereference"
+  ],
+  "C_Cpp_Runner.msvcWarnings": [
+    "/W4",
+    "/permissive-",
+    "/w14242",
+    "/w14287",
+    "/w14296",
+    "/w14311",
+    "/w14826",
+    "/w44062",
+    "/w44242",
+    "/w14905",
+    "/w14906",
+    "/w14263",
+    "/w44265",
+    "/w14928"
+  ],
+  "C_Cpp_Runner.enableWarnings": true,
+  "C_Cpp_Runner.warningsAsError": false,
+  "C_Cpp_Runner.compilerArgs": [],
+  "C_Cpp_Runner.linkerArgs": [],
+  "C_Cpp_Runner.includePaths": [
+    "/Users/pablo/Developer/GitHub/Remate/src/arduino-side/mainRemateIO/include",
+    "/Users/pablo/Developer/GitHub/Remate/src/arduino-side/mainRemateIO/src",
+    "/Users/pablo/.platformio/packages/framework-arduino-megaavr/cores/arduino/api/deprecated",
+    "/Users/pablo/.platformio/packages/framework-arduino-megaavr/cores/arduino",
+    "/Users/pablo/.platformio/packages/framework-arduino-megaavr/variants/nona4809",
+    "/Users/pablo/.platformio/packages/framework-arduino-megaavr/libraries/EEPROM/src",
+    "/Users/pablo/.platformio/packages/framework-arduino-megaavr/libraries/SPI/src",
+    "/Users/pablo/.platformio/packages/framework-arduino-megaavr/libraries/SoftwareSerial/src",
+    "/Users/pablo/.platformio/packages/framework-arduino-megaavr/libraries/Wire/src",
+    ""
+  ],
+  "C_Cpp_Runner.includeSearch": [
+    "*",
+    "**/*"
+  ],
+  "C_Cpp_Runner.excludeSearch": [
+    "**/build",
+    "**/build/**",
+    "**/.*",
+    "**/.*/**",
+    "**/.vscode",
+    "**/.vscode/**"
+  ],
+  "C_Cpp_Runner.useAddressSanitizer": false,
+  "C_Cpp_Runner.useUndefinedSanitizer": false,
+  "C_Cpp_Runner.useLeakSanitizer": false,
+  "C_Cpp_Runner.showCompilationTime": false,
+  "C_Cpp_Runner.useLinkTimeOptimization": false,
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
+}
