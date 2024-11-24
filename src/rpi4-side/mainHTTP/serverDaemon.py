@@ -156,7 +156,7 @@ def stream():
     # Check if the serial communication is open
     if ser.isOpen():
         # Initialize picamera
-        with picamera.PiCamera(framerate=10) as camera:
+        with picamera.PiCamera(framerate=8) as camera:
             camera.resolution = (704, 512)
             # Create and stream buffer
             frame_buffer = FrameBuffer()
