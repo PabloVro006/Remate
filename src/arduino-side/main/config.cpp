@@ -192,8 +192,7 @@ void throwPaper(){
 void throwUnsorted(){
 	rotateMotorSIM(CLOCKWISE, COUNTER_CLOCKWISE);  // Simultaneously rotates both the disk's motor and the cross's motor
 	resetMotorOffset(CROSS, CLOCKWISE, crossOffsetDelay);  // Adjusting the cross's offset
-	rotateMotor(DISK, CLOCKWISE, 1);
-	resetMotorOffset(DISK, COUNTER_CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
+	rotateMotor(DISK, CLOCKWISE, 1);  //
 	delay(serialDelay);
 	rotateMotor(DISK, COUNTER_CLOCKWISE, 1);  //
 	rotateMotorSIM(COUNTER_CLOCKWISE, CLOCKWISE);  // Simultaneously rotates both the disk's motor and the cross's motor
