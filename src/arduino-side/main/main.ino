@@ -30,7 +30,7 @@ void loop() {
 
   // Get trash only if Remate is not throwing (motors aren't moving)
   if(!isThrowing){
-    trash = getTrashFromPi();
+    trash = TrashType(getTrashFromPi());
     // Condition for when the Rpi4 has sent something
     if(trash != TRASH_NONE){
       // Stops the paddle
@@ -42,7 +42,7 @@ void loop() {
         // In order to break the while or a trash is detected or 5 seconds passes
         while(trash == TRASH_INCOMING || trash == TRASH_NONE){
           ul currentMillisForTrashIncoming = millis();
-          trash = getTrashFromPi();  // While waiting keeps to update the trash variable
+          trash = TrashType(getTrashFromPi());  // While waiting keeps to update the trash variable
           delay(serialDelay);
           // Checking if the 5 seconds max has passed
           if(currentMillisForTrashIncoming - startMillis >= trashIncomingTimeout){
@@ -56,15 +56,11 @@ void loop() {
       isThrowing = true;  // This is useful for stopping the data reception from the Rpi4
       if(trash == TRASH_METAL || trash == TRASH_PLASTIC){
         throwPOM(trash);
-      } else {
-        throwPaper();
-      }
-      /* 
-      else if(trash == TRASH_PAPER){  // At this point trash must be TRASH_PAPER
+      } else if(trash == TRASH_PAPER){  // At this point trash must be TRASH_PAPER
         throwPaper();
       } else {
         throwUnsorted();
-      }*/
+      }
       // Send feedback to Rpi4 and start moving the paddle again
       sendFeedbackToPi(feedbackOk);
       paddleMotorStruct = {1, 0};  // Power = 1, going = 0

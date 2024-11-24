@@ -1,4 +1,4 @@
-#include <Arduino.h>
+
 // Include config header file
 #include "config.h"
 
