@@ -80,12 +80,18 @@ if get_response.status_code == 200:
                 boxes_list.append(class_id)
                             
             c = Counter(boxes_list)
+            predicted_class = c.most_common()[0][0] + 1
 
-            if len(c) > 1:
-                if c.most_common()[0][1] != c.most_common()[1][1]:
-                    predicted_class = int(c.most_common(1)[0]) + 1
-                else: predicted_class = 4
-            else: predicted_class = int(c.most_common(1)[0]) + 1
+            '''
+            if (c):
+                if len(c) > 1:
+                    if c.most_common()[0][1] != c.most_common()[1][1]:
+                        predicted_class = int(c.most_common()[0][0]) + 1
+                    else: predicted_class = 4
+                else: predicted_class = int(c.most_common()[0][0]) + 1
+
+            print(predicted_class)
+            '''
 
             # Appends the prediction to the streak deque    
             if predicted_class != 0:
@@ -98,7 +104,6 @@ if get_response.status_code == 200:
                 # Sends a post request with the data
                 post_response = requests.post(url, data=dict)
                 
-
             # Checks if the last 10 predictions are all the same
             if predicted_class != 0 and len(streak) == 10 and all(streak[i] == streak[0] for i in range(len(streak))):
                 # Saves data in a dictionary 
