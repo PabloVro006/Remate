@@ -224,7 +224,7 @@ int getTrashFromPi() {
 
 // Send the feedback to Rpi4 after the throwing is over
 void sendFeedbackToPi(int feedbackNumber){
-	delay(500);  // Needed for solving latency problems
+	delay(1000);  // Needed for solving latency problems
   Serial.println(feedbackNumber);  // Send the "done" flag (42) to the Rpi4
   Serial.flush();  // Clear the outgoing buffer
   delay(serialDelay);
