@@ -170,9 +170,9 @@ void throwPOM(TrashType trashType){
 void throwPaper(){
   if(paperAlreadyPresent){
     rotateMotorSIM(CLOCKWISE, COUNTER_CLOCKWISE);  // Simultaneously rotates both the disk's motor and the cross's motor
-    resetMotorOffset(DISK, COUNTER_CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
     rotateMotor(CROSS, COUNTER_CLOCKWISE, 1);  // Now the cross rotates again to dispose also the second-arrived waste
-    resetMotorOffset(CROSS, COUNTER_CLOCKWISE, crossOffsetDelay);  // Adjusting the cross's offset
+    resetMotorOffset(CROSS, CLOCKWISE, crossOffsetDelay);  // Adjusting the cross's offset
+    resetMotorOffset(DISK, COUNTER_CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
     delay(serialDelay);
     rotateMotor(DISK, COUNTER_CLOCKWISE, 1);
     resetMotorOffset(DISK, CLOCKWISE, diskOffsetDelay);  // Adjusting the disk's offset
