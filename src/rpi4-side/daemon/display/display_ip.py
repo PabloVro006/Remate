@@ -40,7 +40,7 @@ try:
     lcd.write_string(wifi_name[:16])  # Truncate if longer than 16 characters
     clear_display(1)
     lcd.write_string(ip)
-    sleep(30)
+    sleep(10)
 
 except KeyboardInterrupt:
   lcd.clear()
