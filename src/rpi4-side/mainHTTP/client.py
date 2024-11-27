@@ -5,6 +5,7 @@ from ultralytics import YOLO
 from collections import deque, Counter
 import argparse
 
+# Take the IP Address of the server as an argparse argument
 parser = argparse.ArgumentParser()
 parser.add_argument("--ip", help="Insert the server's ip address")
 args = parser.parse_args()
@@ -73,13 +74,13 @@ if get_response.status_code == 200:
             predicted_class = 0
             boxes_list = []
 
-            # For each prediction, 
+            # Saves boxes data
             for data in detection.boxes.data.tolist():
                 class_id = data[5]
                 boxes_list.append(class_id)
-                            
-            c = Counter(boxes_list)
-            
+
+            # Finds the class with most items
+            c = Counter(boxes_list) 
             if (c): predicted_class = c.most_common()[0][0] + 1
 
             '''

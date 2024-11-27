@@ -7,6 +7,7 @@ import serial
 from time import sleep
 import RPi.GPIO as GPIO
 
+# Setup for the display that shows the IP Address once the code runs
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 GPIO.setup(7, GPIO.OUT)
