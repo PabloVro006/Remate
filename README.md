@@ -2,8 +2,8 @@
 Remate (Robotic Ecological Multi-waste Automatic Trashcan) is an innovative smart sorting system designed to revolutionize urban waste management. Unlike existing solutions that process one item at a time, Remate is capable of identifying and sorting multiple pieces of waste simultaneously.
 
 ### 🏆 Achievements & Recognition
-Winners of the Italian Robotics Championship 2024.
-Gold Medal (5th place out of 48 teams) at the World Robot Olympiad Gloabl Final 2024, in the Future Innovators Senior category
+* 1st place at the Italian Robotics Championship 2024.
+* Gold Medal (5th place out of 48 teams) at the World Robot Olympiad Gloabl Final 2024, in the Future Innovators Senior category
 
 ### 🚀 Key Innovations
 The core of Remate lies in its mechanical division system, which allows it to accept an entire bag of waste and sort it autonomously.
@@ -25,6 +25,6 @@ The project integrates hardware and software components:
 * Arduino Firmware (C++): Manages the movement of the rotating paddle, sorting disk, and separators.
 
 ### 👥 The Team
-Giulio Gismondi: Project Manager, AI Development, and Python scripting.
-Andrea Tarasca: Mechanical Design, 3D Modeling, and Communications.
-Paolo Vairo: Hardware Engineering and Arduino Firmware Development.
+* Paolo Vairo: Hardware Engineering and Arduino Firmware Development.
+* Giulio Gismondi: Project Manager, AI Development, and Python scripting.
+* Andrea Tarasca: Mechanical Design, 3D Modeling, and Communications.
