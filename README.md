@@ -1,3 +1,4 @@
+---
 # Remate - Don't waste your time 🌍♻️
 Remate (Robotic Ecological Multi-waste Automatic Trashcan) is an innovative smart sorting system designed to revolutionize urban waste management. Unlike existing solutions that process one item at a time, Remate is capable of identifying and sorting multiple pieces of waste simultaneously.
 
@@ -9,6 +10,8 @@ Remate (Robotic Ecological Multi-waste Automatic Trashcan) is an innovative smar
 The core of Remate lies in its mechanical division system, which allows it to accept an entire bag of waste and sort it autonomously.
 * **Efficiency**: While competitors take several seconds per item, Remate optimizes flow through mechanical separation and high-speed AI inference
 * **Multi-Object Recognition**: Powered by an AI model based on Object Detection (trained on a custom dataset), the system identifies different materials like plastics and metals in a single frame
+
+---
 
 ### 🛠️ System Architecture
 The project integrates hardware and software components:
@@ -29,3 +32,4 @@ The project integrates hardware and software components:
 * Paolo Vairo: Hardware Engineering and Arduino Firmware Development
 * Giulio Gismondi: Project Manager, AI Development, and Python scripting
 * Andrea Tarasca: Mechanical Design, 3D Modeling, and Communications
+---
