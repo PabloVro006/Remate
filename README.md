@@ -5,7 +5,7 @@ Remate (Robotic Ecological Multi-waste Automatic Trashcan) is an innovative smar
 
 ### 🏆 Achievements & Recognition
 * 1st place at the Italian Robotics Championship 2024
-* Gold Medal (5th place out of 48 teams) at the World Robot Olympiad Gloabl Final 2024, in the Future Innovators Senior category
+* Gold Medal (5th place out of 48 teams) at the World Robot Olympiad Gloabal Final 2024, in the Future Innovators Senior category
 
 ### 🚀 Key Innovations
 The core of Remate lies in its mechanical division system, which allows it to accept an entire bag of waste and sort it autonomously.
