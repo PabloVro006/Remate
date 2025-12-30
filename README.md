@@ -3,6 +3,9 @@
 # Remate - Don't waste your time 🌍♻️
 Remate (Robotic Ecological Multi-waste Automatic Trashcan) is an innovative smart sorting system designed to revolutionize urban waste management. Unlike existing solutions that process one item at a time, Remate is capable of identifying and sorting multiple pieces of waste simultaneously.
 
+> [!WARNING]
+> **Disclaimer:** This repository is public for display purposes. The project is **not intended to be reproducible**, since it is an early-prototype version of a potential future product.
+
 ### 🏆 Achievements & Recognition
 * 1st place at the Italian Robotics Championship 2024
 * Gold Medal (5th place out of 48 teams) at the World Robot Olympiad Global Final 2024, in the Future Innovators Senior category
